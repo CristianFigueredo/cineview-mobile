@@ -36,13 +36,18 @@ export function RootNavigator() {
   return (
     <Tab.Navigator
       appearance={{
-        shadow: true,
         dotSize: DotSize.SMALL,
         tabBarBackground: Colors.$backgroundElevated,
       }}
       tabBarOptions={{
         activeTintColor: Colors.white,
         activeBackgroundColor: Colors.$backgroundPrimaryHeavy,
+        tabStyle: {
+          shadowColor: Colors.$backgroundNeutralHeavy,
+          shadowOpacity: 0.75,
+          shadowRadius: 12,
+          shadowOffset: { height: 5, width: 0 },
+        },
       }}
       screenOptions={{
         headerShown: false,
