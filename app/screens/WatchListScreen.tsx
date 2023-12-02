@@ -22,10 +22,11 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
             key={index}
             posterURL={POSTER_IMAGE_BASE_URL + movie.poster_path}
             title={movie.title}
-            director="Christopher Nolan"
+            overview={movie.overview}
             voteAverage={movie.vote_average}
           />
         )}
+        estimatedItemSize={180}
       />
     </Screen>
   )

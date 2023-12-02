@@ -1,28 +1,26 @@
 import React, { FunctionComponent } from "react"
 import { ViewStyle, Image, ImageStyle, TextStyle } from "react-native"
 import { Card, Text, View, Spacings, Colors } from "react-native-ui-lib"
-import { translate } from "app/i18n"
 
 type Props = {
   posterURL: string
   title: string
   voteAverage: number
-  director: string
-  starring?: string[]
+  overview: string
 }
 
 export const HorizontalMovieCard: FunctionComponent<Props> = ({
   posterURL,
   title,
   voteAverage,
-  director,
+  overview,
 }) => {
   return (
     <Card key={1} style={$container}>
       <Image source={{ uri: posterURL }} style={$posterImage} />
       <View style={$middleContainer}>
         <Text style={$titleLabel}>{title.length > 35 ? title.slice(0, 32) + "..." : title}</Text>
-        <Text style={$directorLabel}>{translate("common.by") + " " + director}</Text>
+        <Text style={$directorLabel}>{overview?.slice(0, 90)}...</Text>
       </View>
 
       <Text style={$voteAverageLabel}>{voteAverage}</Text>
@@ -70,5 +68,5 @@ const $middleContainer: ViewStyle = {
   flex: 1,
   justifyContent: "center",
   alignItems: "center",
-  paddingHorizontal: Spacings.s3,
+  paddingHorizontal: Spacings.s2,
 }
