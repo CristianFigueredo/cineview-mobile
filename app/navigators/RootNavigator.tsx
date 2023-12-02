@@ -77,7 +77,7 @@ export function RootNavigator() {
         options={{
           tabBarLabel: translate("rootNavigator.watchListTabLabel"),
           tabBarIcon: ({ color, size }: TabBarIconProps) => (
-            <Icon name="playlist" size={size} color={color} />
+            <Icon name="grid" size={size} color={color} />
           ),
         }}
       />
