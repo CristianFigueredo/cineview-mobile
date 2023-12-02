@@ -3,6 +3,7 @@ const en = {
     ok: "OK!",
     cancel: "Cancel",
     back: "Back",
+    by: "By",
   },
   errorScreen: {
     title: "Something went wrong!",
