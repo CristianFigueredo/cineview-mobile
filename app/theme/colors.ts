@@ -58,7 +58,7 @@ export const colors = {
   /**
    * The default color of the screen background.
    */
-  background: Colors.$backgroundElevatedLight,
+  background: Colors.$backgroundNeutralLight,
   /**
    * The default border color.
    */
