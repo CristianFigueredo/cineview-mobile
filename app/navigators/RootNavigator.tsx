@@ -6,7 +6,7 @@ import * as Screens from "../screens"
 import { Colors } from "react-native-ui-lib"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { AnimatedTabBarNavigator, DotSize } from "react-native-animated-nav-tab-bar"
-import Icon from "@expo/vector-icons/SimpleLineIcons"
+import Icon from "@expo/vector-icons/Feather"
 
 type TabBarIconProps = {
   focused: boolean
@@ -36,6 +36,7 @@ export function RootNavigator() {
   return (
     <Tab.Navigator
       appearance={{
+        shadow: false,
         dotSize: DotSize.SMALL,
         tabBarBackground: Colors.$backgroundElevated,
       }}
@@ -44,10 +45,11 @@ export function RootNavigator() {
         activeBackgroundColor: Colors.$backgroundPrimaryHeavy,
         tabStyle: {
           shadowColor: Colors.$backgroundNeutralHeavy,
-          shadowOpacity: 0.75,
+          shadowOpacity: 0.45,
           shadowRadius: 12,
           shadowOffset: { height: 5, width: 0 },
         },
+        size: 64,
       }}
       screenOptions={{
         headerShown: false,
@@ -59,9 +61,7 @@ export function RootNavigator() {
         component={Screens.HomeScreen}
         options={{
           tabBarLabel: translate("rootNavigator.homeTabLabel"),
-          tabBarIcon: ({ color, size }: TabBarIconProps) => (
-            <Icon name="home" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color }: TabBarIconProps) => <Icon name="home" size={23} color={color} />,
         }}
       />
 
@@ -70,8 +70,8 @@ export function RootNavigator() {
         component={Screens.SearchScreen}
         options={{
           tabBarLabel: translate("rootNavigator.searchTabLabel"),
-          tabBarIcon: ({ color, size }: TabBarIconProps) => (
-            <Icon name="magnifier" size={size} color={color} />
+          tabBarIcon: ({ color }: TabBarIconProps) => (
+            <Icon name="search" size={23} color={color} />
           ),
         }}
       />
@@ -81,9 +81,7 @@ export function RootNavigator() {
         component={Screens.WatchListScreen}
         options={{
           tabBarLabel: translate("rootNavigator.watchListTabLabel"),
-          tabBarIcon: ({ color, size }: TabBarIconProps) => (
-            <Icon name="grid" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color }: TabBarIconProps) => <Icon name="grid" size={23} color={color} />,
         }}
       />
     </Tab.Navigator>
