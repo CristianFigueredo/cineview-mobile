@@ -1,11 +1,9 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs"
 import { CompositeScreenProps } from "@react-navigation/native"
 import React from "react"
-import { TextStyle, ViewStyle } from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { translate } from "../i18n"
 import * as Screens from "../screens"
-import { colors, spacing, typography } from "../theme"
+import { Colors } from "react-native-ui-lib"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { AnimatedTabBarNavigator, DotSize } from "react-native-animated-nav-tab-bar"
 import Icon from "@expo/vector-icons/SimpleLineIcons"
@@ -35,22 +33,20 @@ export type TabScreenProps<T extends keyof TabParamList> = CompositeScreenProps<
 const Tab = AnimatedTabBarNavigator<TabParamList>()
 
 export function RootNavigator() {
-  const { bottom } = useSafeAreaInsets()
-
   return (
     <Tab.Navigator
       appearance={{
         shadow: true,
         dotSize: DotSize.SMALL,
+        tabBarBackground: Colors.$backgroundElevated,
+      }}
+      tabBarOptions={{
+        activeTintColor: Colors.white,
+        activeBackgroundColor: Colors.$backgroundPrimaryHeavy,
       }}
       screenOptions={{
         headerShown: false,
         tabBarHideOnKeyboard: true,
-        tabBarStyle: [$tabBar, { height: bottom + 70 }],
-        tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.text,
-        tabBarLabelStyle: $tabBarLabel,
-        tabBarItemStyle: $tabBarItem,
       }}
     >
       <Tab.Screen
@@ -87,19 +83,4 @@ export function RootNavigator() {
       />
     </Tab.Navigator>
   )
-}
-
-const $tabBar: ViewStyle = {
-  backgroundColor: colors.background,
-  borderTopColor: colors.transparent,
-}
-
-const $tabBarItem: ViewStyle = {
-  paddingTop: spacing.md,
-}
-
-const $tabBarLabel: TextStyle = {
-  fontSize: 12,
-  fontFamily: typography.primary.medium,
-  lineHeight: 16,
 }

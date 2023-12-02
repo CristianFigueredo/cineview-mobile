@@ -1,5 +1,4 @@
-// TODO: write documentation for colors and palette in own markdown file and add links from here
-
+import { Colors } from "react-native-ui-lib"
 const palette: Record<string, string> = {
   neutral100: "#FFFFFF",
   neutral200: "#F4F2F1",
@@ -47,38 +46,39 @@ export const colors = {
   /**
    * A helper for making something see-thru.
    */
-  transparent: "rgba(0, 0, 0, 0)",
+  transparent: "transparent",
   /**
    * The default text color in many components.
    */
-  text: palette.neutral800,
+  text: Colors.$textNeutral,
   /**
    * Secondary text information.
    */
-  textDim: palette.neutral600,
+  textDim: Colors.$textNeutralHeavy,
   /**
    * The default color of the screen background.
    */
-  background: palette.neutral200,
+  background: Colors.$backgroundElevatedLight,
   /**
    * The default border color.
    */
-  border: palette.neutral400,
+  border: Colors.$backgroundNeutralIdle,
   /**
    * The main tinting color.
    */
-  tint: palette.primary500,
+  tint: Colors.textPrimary,
   /**
    * A subtle color used for lines.
    */
-  separator: palette.neutral300,
+  separator: Colors.$backgroundNeutralMedium,
   /**
    * Error messages.
    */
-  error: palette.angry500,
+  error: Colors.$textDanger,
   /**
    * Error Background.
    *
    */
-  errorBackground: palette.angry100,
+  errorBackground: Colors.$backgroundDangerHeavy,
+  icon: Colors.$iconDanger,
 }
