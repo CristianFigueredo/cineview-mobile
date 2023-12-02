@@ -25,7 +25,6 @@ const $poster: ImageStyle = {
   width: 300,
   height: 450,
   borderRadius: 20,
-  borderWidth: 2,
   overflow: "hidden",
 }
 

@@ -30,7 +30,6 @@ const $poster: ImageStyle = {
   height: 220,
   borderRadius: 10,
   overflow: "hidden",
-  borderWidth: 1,
   marginLeft: Spacings.s3,
   marginVertical: Spacings.s4,
 }
