@@ -1,26 +1,38 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
-import { Screen, Text } from "app/components"
+import { Screen } from "app/components"
 import { TabScreenProps } from "app/navigators/RootNavigator"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "app/models"
+import { HorizontalMovieCard } from "app/components/HorizontalMovieCard"
+import { movies } from "app/data/placeholders"
+import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
+import { Spacings } from "react-native-ui-lib"
+import { FlashList } from "@shopify/flash-list"
 
-interface WatchListScreenProps extends TabScreenProps<"WatchList"> {}
+interface Props extends TabScreenProps<"WatchList"> {}
 
-export const WatchListScreen: FC<WatchListScreenProps> = observer(function WatchListScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
+export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
   return (
-    <Screen style={$root} preset="scroll">
-      <Text text="watchList" />
+    <Screen safeAreaEdges={["top"]} style={$root} preset="scroll">
+      <FlashList
+        data={movies.results}
+        contentContainerStyle={{ paddingTop: Spacings.s8 }}
+        renderItem={({ item: movie, index }) => (
+          <HorizontalMovieCard
+            key={index}
+            posterURL={POSTER_IMAGE_BASE_URL + movie.poster_path}
+            title={movie.title}
+            director="Christopher Nolan"
+            voteAverage={movie.vote_average}
+          />
+        )}
+      />
     </Screen>
   )
 })
 
 const $root: ViewStyle = {
   flex: 1,
+  paddingHorizontal: Spacings.s3,
+  paddingTop: Spacings.s5,
 }
