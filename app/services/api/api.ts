@@ -5,7 +5,7 @@
  * See the [Backend API Integration](https://github.com/infinitered/ignite/blob/master/docs/Backend-API-Integration.md)
  * documentation for more details.
  */
-import { ApiResponse as APIResponse, ApisauceInstance, create } from "apisauce"
+import { ApiResponse as APIResponse, ApiOkResponse, ApisauceInstance, create } from "apisauce"
 import Config from "../../config"
 import type { ApiConfig } from "./api.types"
 import { IMovieDetail } from "./entities"
@@ -43,7 +43,7 @@ export class Api {
   }
 
   movies = {
-    getDetailsWith: async (id: string) => {
+    getDetailsWith: async (id: string): Promise<IMovieDetail> => {
       const response: APIResponse<IMovieDetail> = await this.apisauce.get(`movie/${id}`, {
         append_to_response: "videos,credits",
         language: "en-US",
@@ -51,7 +51,13 @@ export class Api {
 
       if (!response.ok) {
         const problem = getGeneralAPIProblem(response)
-        return problem
+        if (problem) {
+          throw new Error(problem.kind)
+        }
+      }
+
+      if (!response.data) {
+        throw new Error("errors.no_data")
       }
       return response.data
     },

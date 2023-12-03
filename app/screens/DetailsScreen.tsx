@@ -1,50 +1,67 @@
-import React, { FunctionComponent } from "react"
+import React, { FunctionComponent, useState, useEffect, Fragment } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, ImageBackground, ImageStyle, TextStyle } from "react-native"
+import { ViewStyle, ImageStyle, TextStyle, Alert } from "react-native"
 import { Screen } from "app/components"
 import { AppStackScreenProps } from "app/navigators/AppNavigator"
-import { movieDetails } from "app/data/placeholders"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
 import Icon from "@expo/vector-icons/AntDesign"
 import { Text, Colors, Spacings, Chip, View } from "react-native-ui-lib"
-import { Image } from "expo-image"
+import { Image, ImageBackground } from "expo-image"
 import { useRoute } from "@react-navigation/native"
+import { api } from "app/services/api"
+import { IMovieDetail } from "app/services/api/entities"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
 export const DetailsScreen: FunctionComponent<Props> = observer(function () {
+  const [movieDetails, setMovieDetails] = useState<IMovieDetail>()
+  const [cast, setCast] = useState<IMovieDetail["credits"]["cast"]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
   const route = useRoute()
 
-  React.useEffect(() => {
-    // TODO: remove @ts-ignore
-    // @ts-ignore
-    alert(route.params.movieID)
+  useEffect(() => {
+    const fetchMovieDetails = async () => {
+      // TODO: remove ts-ignore
+      // @ts-ignore
+      const details = await api.movies.getDetailsWith(route.params?.movieID)
+      console.tron.log(details.credits.cast)
+      setMovieDetails(details)
+      setCast(details.credits.cast.filter((cast) => cast.profile_path !== null))
+      setIsLoading(false)
+    }
+    fetchMovieDetails().catch(() => Alert.alert("Something went wrong"))
   }, [])
+
+  if (isLoading) return null
+  if (!movieDetails) return null
 
   return (
     <Screen statusBarStyle="light" style={$root} preset="scroll">
       <ImageBackground
         style={$movieBackdrop}
-        source={{ uri: POSTER_IMAGE_BASE_URL + movieDetails.backdrop_path }}
-        blurRadius={8}
+        source={{
+          uri: (POSTER_IMAGE_BASE_URL + movieDetails.backdrop_path).replace("original", "w300"),
+        }}
+        blurRadius={1}
       >
-        <Icon name="left" style={$goBackIcon} size={35} color="white" />
         <Icon name="play" size={35} color="white" />
       </ImageBackground>
       <View style={$contentContainer}>
         <View style={$directionRow}>
           <Image
             style={$poster}
-            source={{ uri: POSTER_IMAGE_BASE_URL + movieDetails.poster_path }}
+            source={{
+              uri: (POSTER_IMAGE_BASE_URL + movieDetails.poster_path).replace("original", "w342"),
+            }}
           />
           <View style={{ padding: Spacings.s4 }}>
             <Text text40M marginB-s3>
               {movieDetails.title}
             </Text>
-            <View style={$directionRow}>
-              {movieDetails.genres.slice(0, 3).map((genre) => (
-                <Chip marginR-s2 key={genre.id} label={genre.name} />
+            <View style={$genres}>
+              {movieDetails.genres.map((genre) => (
+                <Chip size={20} marginB-s1 marginR-s2 key={genre.id} label={genre.name} />
               ))}
             </View>
             <Text text80 marginT-s2>
@@ -56,26 +73,35 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
           Introduction
         </Text>
         <Text marginB-s4>{movieDetails.overview}</Text>
-        <Text text60M marginT-s6 marginB-s3>
-          Cast
-        </Text>
-        <FlashList
-          data={movieDetails.credits.cast}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={(item) => (
-            <View marginR-s6>
-              <Image
-                style={$castPicture}
-                source={{ uri: POSTER_IMAGE_BASE_URL + item.item.profile_path }}
-              />
-              <Text style={$castName} marginT-s1>
-                {item.item.name.slice(0, 23)}
-              </Text>
-            </View>
-          )}
-          estimatedItemSize={120}
-        />
+        {!!cast && (
+          <Fragment>
+            <Text text60M marginT-s6 marginB-s3>
+              Cast
+            </Text>
+            <FlashList
+              data={movieDetails.credits.cast}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              estimatedItemSize={100}
+              renderItem={(item) => (
+                <View marginR-s6>
+                  <Image
+                    style={$castPicture}
+                    source={{
+                      uri: (POSTER_IMAGE_BASE_URL + item.item.profile_path).replace(
+                        "original",
+                        "w185",
+                      ),
+                    }}
+                  />
+                  <Text style={$castName} marginT-s1>
+                    {item.item.name.slice(0, 23)}
+                  </Text>
+                </View>
+              )}
+            />
+          </Fragment>
+        )}
       </View>
     </Screen>
   )
@@ -124,4 +150,8 @@ const $castName: TextStyle = {
   fontSize: 12,
 }
 
-const $goBackIcon: ViewStyle = { left: 30, top: 80, position: "absolute" }
+const $genres: ViewStyle = {
+  maxWidth: 200,
+  flexDirection: "row",
+  flexWrap: "wrap",
+}
