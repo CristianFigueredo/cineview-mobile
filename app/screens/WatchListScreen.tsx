@@ -22,8 +22,7 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
     console.tron.log(watchListStore)
   })
   const onMoviePress = useCallback((movieID: number) => {
-    // TODO: remove @ts-ignore
-    // @ts-ignore
+    // @ts-ignore TODO: remove this
     navigation.navigate("MovieDetails", { movieID })
   }, [])
 

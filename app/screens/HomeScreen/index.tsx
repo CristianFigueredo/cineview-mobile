@@ -36,8 +36,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
   })
 
   const onMoviePress = useCallback((movieID: number) => {
-    // TODO: remove @ts-ignore
-    // @ts-ignore
+    // @ts-ignore TODO: remove this
     navigation.navigate("MovieDetails", { movieID })
   }, [])
 
@@ -80,7 +79,10 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
       <View style={$header}>
         <Text style={$title}>{translate("homeScreen.title")}</Text>
         <MotiPressable
-          onPress={() => Alert.alert("Coming soon!")}
+          onPress={() => {
+            // @ts-ignore TODO: remove this
+            navigation.navigate("Search")
+          }}
           animate={({ pressed }) => {
             "worklet"
             return {
@@ -98,8 +100,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           layout="stack"
           containerCustomStyle={{ marginLeft: Spacings.s8 }}
           layoutCardOffset={22}
-          /* TODO: remove @ts-ignore */
-          /* @ts-ignore */
+          /* @ts-ignore TODO: remove this */
           renderItem={renderBigMovieCard}
           sliderWidth={width}
           itemWidth={width}
@@ -112,8 +113,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           </Text>
           <FlatList
             data={moviesByCategory.topRated}
-            /* TODO: remove @ts-ignore */
-            /* @ts-ignore */
+            /* @ts-ignore TODO: remove this */
             renderItem={renderTallMovieCard}
             keyExtractor={(item) => item.id.toString()}
             horizontal
@@ -126,8 +126,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           <Text style={$categoryLabel}>{translate("homeScreen.categories.nowPlaying")}</Text>
           <FlatList
             data={moviesByCategory.nowPlaying}
-            /* TODO: remove @ts-ignore */
-            /* @ts-ignore */
+            /* @ts-ignore TODO: remove this */
             renderItem={renderTallMovieCard}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
@@ -140,8 +139,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           <Text style={$categoryLabel}>{translate("homeScreen.categories.upcoming")}</Text>
           <FlatList
             data={moviesByCategory.upcoming}
-            /* TODO: remove @ts-ignore */
-            /* @ts-ignore */
+            /* @ts-ignore TODO: remove this */
             renderItem={renderTallMovieCard}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}

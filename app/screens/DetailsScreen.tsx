@@ -29,8 +29,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
-      // TODO: remove ts-ignore
-      // @ts-ignore
+      // @ts-ignore TODO: remove this
       const details = await api.movies.getDetailsWith(route.params?.movieID)
       console.tron.log(details.credits.cast)
       setMovieDetails(details)
