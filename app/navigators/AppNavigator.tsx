@@ -11,7 +11,6 @@ import React from "react"
 import Config from "../config"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { RootNavigator, TabParamList } from "./RootNavigator"
-import { Colors } from "react-native-ui-lib"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
