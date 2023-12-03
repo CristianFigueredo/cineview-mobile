@@ -41,11 +41,11 @@ export function RootNavigator() {
         tabBarBackground: Colors.$backgroundElevated,
       }}
       tabBarOptions={{
-        activeTintColor: Colors.white,
-        activeBackgroundColor: Colors.$backgroundPrimaryHeavy,
+        activeTintColor: Colors.$iconPrimary,
+        activeBackgroundColor: Colors.$backgroundNeutralMedium,
         tabStyle: {
           shadowColor: Colors.$backgroundNeutralHeavy,
-          shadowOpacity: 0.45,
+          shadowOpacity: 0.35,
           shadowRadius: 12,
           shadowOffset: { height: 5, width: 0 },
         },
@@ -81,7 +81,7 @@ export function RootNavigator() {
         component={Screens.WatchListScreen}
         options={{
           tabBarLabel: translate("rootNavigator.watchListTabLabel"),
-          tabBarIcon: ({ color }: TabBarIconProps) => <Icon name="grid" size={23} color={color} />,
+          tabBarIcon: ({ color }: TabBarIconProps) => <Icon name="heart" size={23} color={color} />,
         }}
       />
     </Tab.Navigator>
