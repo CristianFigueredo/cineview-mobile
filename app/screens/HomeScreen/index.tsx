@@ -43,10 +43,13 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      const moviesByCategory = await api.movies.getAllByCategory(1)
-      setIsLoading(false)
-      setMoviesByCategory(moviesByCategory)
-      console.tron.log(moviesByCategory)
+      try {
+        const moviesByCategory = await api.movies.getAllByCategory(1)
+        setIsLoading(false)
+        setMoviesByCategory(moviesByCategory)
+      } catch {
+        Alert.alert("An error occurred while fetching movies")
+      }
     }
     fetchMovies()
   }, [])

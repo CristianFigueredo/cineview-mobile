@@ -7,10 +7,10 @@
  */
 import { ApiResponse as APIResponse, ApisauceInstance, create } from "apisauce"
 import Config from "../../config"
-import type { ApiConfig, IMoviesResponse } from "./api.types"
+import type { ApiConfig, IMovie, IMoviesResponse } from "./api.types"
 import { IMovieDetail } from "./entities"
 import { getGeneralAPIProblem } from "./apiProblem"
-import { MoviesState } from "app/screens"
+import { MoviesState as IMoviesByCategory } from "app/screens"
 
 /**
  * Configuring the apisauce instance.
@@ -62,8 +62,8 @@ export class Api {
       }
       return response.data
     },
-    getAllByCategory: async (page: number): Promise<MoviesState> => {
-      const getByCategory = async (
+    getAllByCategory: async (page: number): Promise<IMoviesByCategory> => {
+      const getMoviesByCategory = async (
         category: "upcoming" | "top_rated" | "popular" | "now_playing",
       ) => {
         const response: APIResponse<IMoviesResponse> = await this.apisauce.get(
@@ -77,10 +77,10 @@ export class Api {
       }
 
       const responses = await Promise.all([
-        getByCategory("popular"),
-        getByCategory("top_rated"),
-        getByCategory("upcoming"),
-        getByCategory("now_playing"),
+        getMoviesByCategory("popular"),
+        getMoviesByCategory("top_rated"),
+        getMoviesByCategory("upcoming"),
+        getMoviesByCategory("now_playing"),
       ])
 
       if (!responses.every((response) => response?.ok)) {
@@ -100,7 +100,25 @@ export class Api {
         nowPlaying: responses[3]?.data?.results.slice(0, 6) ?? [],
       }
     },
-    searchWith: () => [],
+    searchWith: async (query: string): Promise<IMovie[]> => {
+      const response: APIResponse<IMoviesResponse> = await this.apisauce.get("search/movie", {
+        query,
+        language: "en-US",
+        page: 1,
+      })
+
+      if (!response.ok) {
+        const problem = getGeneralAPIProblem(response)
+        if (problem) {
+          throw new Error(problem.kind)
+        }
+      }
+
+      if (!response.data) {
+        throw new Error("errors.no_data")
+      }
+      return response.data.results
+    },
   }
 }
 
