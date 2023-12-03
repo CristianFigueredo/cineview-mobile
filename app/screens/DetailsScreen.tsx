@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import React, { FunctionComponent } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, ImageBackground, ImageStyle, TextStyle } from "react-native"
 import { Screen } from "app/components"
@@ -9,10 +9,19 @@ import { FlashList } from "@shopify/flash-list"
 import Icon from "@expo/vector-icons/AntDesign"
 import { Text, Colors, Spacings, Chip, View } from "react-native-ui-lib"
 import { Image } from "expo-image"
+import { useRoute } from "@react-navigation/native"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
-export const DetailsScreen: FC<Props> = observer(function () {
+export const DetailsScreen: FunctionComponent<Props> = observer(function () {
+  const route = useRoute()
+
+  React.useEffect(() => {
+    // TODO: remove @ts-ignore
+    // @ts-ignore
+    alert(route.params.movieID)
+  }, [])
+
   return (
     <Screen statusBarStyle="light" style={$root} preset="scroll">
       <ImageBackground

@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import React, { FC, useCallback } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert } from "react-native"
 import { Screen } from "app/components"
@@ -10,12 +10,30 @@ import { SimpleLineIcons } from "@expo/vector-icons"
 import { TallMovieCard, BigMovieCard } from "./components"
 import { translate } from "app/i18n"
 import { MotiPressable } from "moti/interactions"
+import { useNavigation } from "@react-navigation/native"
+import { IMovie } from "app/services/api"
 
 const { width } = Dimensions.get("window")
 
 interface HomeScreenProps extends TabScreenProps<"Home"> {}
 
 export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
+  const navigation = useNavigation()
+
+  const onMoviePress = useCallback((movieID: number) => {
+    // TODO: remove @ts-ignore
+    // @ts-ignore
+    navigation.navigate("MovieDetails", { movieID })
+  }, [])
+
+  const renderTallMovieCard = useCallback(({ item: movie }: { item: IMovie }) => {
+    return <TallMovieCard information={movie} onPress={onMoviePress} />
+  }, [])
+
+  const renderBigMovieCard = useCallback(({ item: movie }: { item: IMovie }) => {
+    return <BigMovieCard information={movie} onPress={onMoviePress} />
+  }, [])
+
   return (
     <Screen contentContainerStyle={$root} safeAreaEdges={["top"]} preset="scroll">
       <View style={$header}>
@@ -40,7 +58,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         layoutCardOffset={22}
         /* TODO: remove @ts-ignore */
         /* @ts-ignore */
-        renderItem={BigMovieCard}
+        renderItem={renderBigMovieCard}
         sliderWidth={width}
         itemWidth={width}
       />
@@ -51,7 +69,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         data={movies.results}
         /* TODO: remove @ts-ignore */
         /* @ts-ignore */
-        renderItem={TallMovieCard}
+        renderItem={renderTallMovieCard}
         keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -61,7 +79,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         data={movies.results}
         /* TODO: remove @ts-ignore */
         /* @ts-ignore */
-        renderItem={TallMovieCard}
+        renderItem={renderTallMovieCard}
         keyExtractor={(item) => item.id.toString()}
         showsHorizontalScrollIndicator={false}
         horizontal
@@ -71,7 +89,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         data={movies.results}
         /* TODO: remove @ts-ignore */
         /* @ts-ignore */
-        renderItem={TallMovieCard}
+        renderItem={renderTallMovieCard}
         keyExtractor={(item) => item.id.toString()}
         showsHorizontalScrollIndicator={false}
         horizontal

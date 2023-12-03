@@ -1,4 +1,6 @@
-export const movies = {
+import { IMoviesResponse } from "app/services/api"
+
+export const movies: IMoviesResponse = {
   page: 1,
   results: [
     {
@@ -344,7 +346,7 @@ export const movies = {
   ],
   total_pages: 41273,
   total_results: 825442,
-} as const
+}
 
 export const movieDetails = {
   adult: false,
