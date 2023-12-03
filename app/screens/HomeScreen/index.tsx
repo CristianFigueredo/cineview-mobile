@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, Dimensions, View, FlatList, TextStyle } from "react-native"
+import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert } from "react-native"
 import { Screen } from "app/components"
 import Carousel from "react-native-snap-carousel"
 import { TabScreenProps } from "app/navigators/RootNavigator"
@@ -9,6 +9,7 @@ import { Spacings, Text } from "react-native-ui-lib"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import { TallMovieCard, BigMovieCard } from "./components"
 import { translate } from "app/i18n"
+import { MotiPressable } from "moti/interactions"
 
 const { width } = Dimensions.get("window")
 
@@ -19,7 +20,17 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
     <Screen contentContainerStyle={$root} safeAreaEdges={["top"]} preset="scroll">
       <View style={$header}>
         <Text style={$title}>{translate("homeScreen.title")}</Text>
-        <SimpleLineIcons name="magnifier" size={24} />
+        <MotiPressable
+          onPress={() => Alert.alert("Coming soon!")}
+          animate={({ pressed }) => {
+            "worklet"
+            return {
+              scale: pressed ? 0.8 : 1,
+            }
+          }}
+        >
+          <SimpleLineIcons name="magnifier" size={24} />
+        </MotiPressable>
       </View>
       <Carousel
         data={movies.results}

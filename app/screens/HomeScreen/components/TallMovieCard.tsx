@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from "react"
-import { Image, View, TextStyle, ImageStyle } from "react-native"
+import { View, TextStyle, ImageStyle } from "react-native"
 import { Spacings, Text } from "react-native-ui-lib"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
+import { Image } from "expo-image"
 
 type Props = {
   item: {
@@ -14,7 +15,7 @@ export const TallMovieCard: FunctionComponent<Props> = ({ item: movie }) => {
   return (
     <View>
       <Image
-        resizeMode="cover"
+        contentFit="cover"
         style={$poster}
         source={{ uri: (POSTER_IMAGE_BASE_URL + movie.poster_path).replace("original", "w342") }}
       />

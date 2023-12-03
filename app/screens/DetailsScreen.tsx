@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
-import { Image, ViewStyle, ImageBackground, ImageStyle, TextStyle, Dimensions } from "react-native"
+import { ViewStyle, ImageBackground, ImageStyle, TextStyle } from "react-native"
 import { Screen } from "app/components"
 import { TabScreenProps } from "app/navigators/RootNavigator"
 import { movieDetails } from "app/data/placeholders"
@@ -8,6 +8,7 @@ import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
 import Icon from "@expo/vector-icons/AntDesign"
 import { Text, Colors, Spacings, Chip, View } from "react-native-ui-lib"
+import { Image } from "expo-image"
 
 interface Props extends TabScreenProps<"Home"> {}
 

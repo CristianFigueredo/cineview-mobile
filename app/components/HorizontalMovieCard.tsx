@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from "react"
-import { ViewStyle, Image, ImageStyle, TextStyle } from "react-native"
+import { ViewStyle, ImageStyle, TextStyle } from "react-native"
 import { Card, Text, View, Spacings, Colors } from "react-native-ui-lib"
+import { Image } from "expo-image"
 
 type Props = {
   posterURL: string
