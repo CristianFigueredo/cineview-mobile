@@ -8,14 +8,16 @@ import { IMovie } from "app/services/api"
 type Props = {
   information: IMovie
   onPress: () => void
+  index: number
 }
 
-export const BigMovieCard: FunctionComponent<Props> = ({ information: movie, onPress }) => {
+export const BigMovieCard: FunctionComponent<Props> = ({ information: movie, onPress, index }) => {
   return (
     <Pressable onPress={onPress}>
       <View style={$posterContainer}>
         <Image
           contentFit="cover"
+          priority={index < 3 ? "high" : "low"}
           style={$poster}
           source={{ uri: (POSTER_IMAGE_BASE_URL + movie.poster_path).replace("original", "w500") }}
         />

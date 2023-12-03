@@ -9,6 +9,7 @@ type Props = {
   voteAverage: number
   overview: string
   onPress?: () => void
+  index: number
 }
 
 export const HorizontalMovieCard: FunctionComponent<Props> = ({
@@ -17,10 +18,15 @@ export const HorizontalMovieCard: FunctionComponent<Props> = ({
   voteAverage,
   overview,
   onPress,
+  index,
 }) => {
   return (
     <Card onPress={onPress} key={1} style={$container}>
-      <Image source={{ uri: posterURL.replace("original", "w342") }} style={$posterImage} />
+      <Image
+        priority={index < 4 ? "high" : "low"}
+        source={{ uri: posterURL.replace("original", "w342") }}
+        style={$posterImage}
+      />
       <View style={$middleContainer}>
         <Text style={$titleLabel}>{title.length > 35 ? title.slice(0, 32) + "..." : title}</Text>
         <Text style={$directorLabel}>{overview?.slice(0, 90)}...</Text>

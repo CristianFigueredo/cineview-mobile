@@ -47,20 +47,31 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         const moviesByCategory = await api.movies.getAllByCategory(1)
         setIsLoading(false)
         setMoviesByCategory(moviesByCategory)
-      } catch {
+      } catch (error) {
+        console.tron.error("error: ", JSON.stringify(error))
         Alert.alert("An error occurred while fetching movies")
       }
     }
     fetchMovies()
   }, [])
 
-  const renderTallMovieCard = useCallback(({ item: movie }: { item: IMovie }) => {
-    return <TallMovieCard information={movie} onPress={() => onMoviePress(movie.id)} />
-  }, [])
+  const renderTallMovieCard = useCallback(
+    ({ item: movie, index }: { item: IMovie; index: number }) => {
+      return (
+        <TallMovieCard index={index} information={movie} onPress={() => onMoviePress(movie.id)} />
+      )
+    },
+    [],
+  )
 
-  const renderBigMovieCard = useCallback(({ item: movie }: { item: IMovie }) => {
-    return <BigMovieCard information={movie} onPress={() => onMoviePress(movie.id)} />
-  }, [])
+  const renderBigMovieCard = useCallback(
+    ({ item: movie, index }: { item: IMovie; index: number }) => {
+      return (
+        <BigMovieCard index={index} information={movie} onPress={() => onMoviePress(movie.id)} />
+      )
+    },
+    [],
+  )
 
   if (isLoading) return <FullScreenLoader />
   if (!movies) return null

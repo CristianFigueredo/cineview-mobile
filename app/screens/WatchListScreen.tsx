@@ -27,17 +27,21 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
     navigation.navigate("MovieDetails", { movieID })
   }, [])
 
-  const renderHorizontalMovieCard = useCallback(({ item: movie }: { item: IMovie }) => {
-    return (
-      <HorizontalMovieCard
-        posterURL={POSTER_IMAGE_BASE_URL + movie.poster_path}
-        title={movie.title}
-        overview={movie.overview}
-        voteAverage={movie.vote_average}
-        onPress={() => onMoviePress(movie.id)}
-      />
-    )
-  }, [])
+  const renderHorizontalMovieCard = useCallback(
+    ({ item: movie, index }: { item: IMovie; index: number }) => {
+      return (
+        <HorizontalMovieCard
+          posterURL={POSTER_IMAGE_BASE_URL + movie.poster_path}
+          title={movie.title}
+          overview={movie.overview}
+          voteAverage={movie.vote_average}
+          onPress={() => onMoviePress(movie.id)}
+          index={index}
+        />
+      )
+    },
+    [],
+  )
 
   return (
     <Screen safeAreaEdges={["top"]} contentContainerStyle={$root} preset="scroll">
