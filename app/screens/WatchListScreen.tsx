@@ -1,21 +1,26 @@
 import React, { FC, useCallback } from "react"
-import { observer } from "mobx-react-lite"
+import { observer, Observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
-import { Screen } from "app/components"
+import { EmptyStateFullScreen, Screen } from "app/components"
 import { TabScreenProps } from "app/navigators/RootNavigator"
 import { HorizontalMovieCard } from "app/components/HorizontalMovieCard"
-import { movies } from "app/data/placeholders"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { Spacings } from "react-native-ui-lib"
 import { FlashList } from "@shopify/flash-list"
 import { IMovie } from "app/services/api"
 import { useNavigation } from "@react-navigation/native"
+import { useStores } from "app/models"
+import { autorun } from "mobx"
+import { getSnapshot } from "mobx-state-tree"
 
 interface Props extends TabScreenProps<"WatchList"> {}
 
 export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
   const navigation = useNavigation()
-
+  const { watchListStore } = useStores()
+  autorun(() => {
+    console.tron.log(watchListStore)
+  })
   const onMoviePress = useCallback((movieID: number) => {
     // TODO: remove @ts-ignore
     // @ts-ignore
@@ -36,12 +41,17 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
 
   return (
     <Screen safeAreaEdges={["top"]} contentContainerStyle={$root} preset="scroll">
-      <FlashList
-        data={movies.results}
-        contentContainerStyle={{ paddingTop: Spacings.s8 }}
-        renderItem={renderHorizontalMovieCard}
-        estimatedItemSize={180}
-      />
+      <Observer>
+        {() => (
+          <FlashList
+            data={getSnapshot(watchListStore.movies)}
+            contentContainerStyle={{ paddingTop: Spacings.s8 }}
+            renderItem={renderHorizontalMovieCard}
+            estimatedItemSize={180}
+            ListEmptyComponent={EmptyStateFullScreen}
+          />
+        )}
+      </Observer>
     </Screen>
   )
 })

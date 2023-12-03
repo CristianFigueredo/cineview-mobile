@@ -6,13 +6,14 @@ import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
 import Icon from "@expo/vector-icons/AntDesign"
-import { Text, Colors, Spacings, Chip, View } from "react-native-ui-lib"
+import { Text, Colors, Spacings, Chip, View, Button } from "react-native-ui-lib"
 import { Image, ImageBackground } from "expo-image"
 import { useRoute } from "@react-navigation/native"
 import { api } from "app/services/api"
 import { IMovieDetail } from "app/services/api/entities"
 import { openLinkInBrowser } from "app/utils/openLinkInBrowser"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import { useStores } from "app/models"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
@@ -21,6 +22,9 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
   const [cast, setCast] = useState<IMovieDetail["credits"]["cast"]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const route = useRoute()
+  const {
+    watchListStore: { addMovieToWatchList, removeMovieFromWatchList, isMovieInWatchList },
+  } = useStores()
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -113,6 +117,17 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
             />
           </Fragment>
         )}
+        <Button
+          label={isMovieInWatchList(movieDetails.id) ? "Remove from WatchList" : "Add to WatchList"}
+          onPress={() => {
+            if (isMovieInWatchList(movieDetails.id)) {
+              removeMovieFromWatchList(movieDetails.id)
+            } else {
+              addMovieToWatchList({ ...movieDetails, genre_ids: [] })
+            }
+          }}
+          marginT-s10
+        />
       </View>
     </Screen>
   )

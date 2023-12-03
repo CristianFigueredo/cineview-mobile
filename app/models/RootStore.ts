@@ -1,9 +1,13 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { WatchListStoreModel } from "./WatchListStore"
 
 /**
  * A RootStore model.
  */
 export const RootStoreModel = types.model("RootStore").props({
+  watchListStore: types.optional(WatchListStoreModel, {
+    movies: [],
+  }),
 })
 
 /**
