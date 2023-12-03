@@ -75,8 +75,8 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
               uri: (POSTER_IMAGE_BASE_URL + movieDetails.poster_path).replace("original", "w342"),
             }}
           />
-          <View style={{ padding: Spacings.s4 }}>
-            <Text text40M marginB-s3>
+          <View style={$titleAndDetailsContainer}>
+            <Text text60M marginB-s3>
               {movieDetails.title}
             </Text>
             <View style={$genres}>
@@ -188,9 +188,8 @@ const $genres: ViewStyle = {
   flexDirection: "row",
   flexWrap: "wrap",
 }
-
-const $fullScreenLoader: ViewStyle = {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
+const $titleAndDetailsContainer: ViewStyle = {
+  marginLeft: Spacings.s4,
+  marginTop: Spacings.s4,
+  maxWidth: 200,
 }
