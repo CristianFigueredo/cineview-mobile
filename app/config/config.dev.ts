@@ -6,5 +6,7 @@
  * https://reactnative.dev/docs/security#storing-sensitive-info
  */
 export default {
-  API_URL: "https://api.rss2json.com/v1/",
+  API_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
+  // TODO: @danger only for demonstration purposes
+  API_KEY: process.env.EXPO_PUBLIC_AND_UNSAFE_API_KEY,
 }
