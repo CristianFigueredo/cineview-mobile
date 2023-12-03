@@ -26,7 +26,7 @@ export const HorizontalMovieCard: FunctionComponent<Props> = ({
         <Text style={$directorLabel}>{overview?.slice(0, 90)}...</Text>
       </View>
 
-      <Text style={$voteAverageLabel}>{voteAverage}</Text>
+      <Text style={$voteAverageLabel}>{voteAverage.toFixed(1)}</Text>
     </Card>
   )
 }
