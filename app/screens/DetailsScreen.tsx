@@ -2,7 +2,7 @@ import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, ImageBackground, ImageStyle, TextStyle } from "react-native"
 import { Screen } from "app/components"
-import { TabScreenProps } from "app/navigators/RootNavigator"
+import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { movieDetails } from "app/data/placeholders"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
@@ -10,7 +10,7 @@ import Icon from "@expo/vector-icons/AntDesign"
 import { Text, Colors, Spacings, Chip, View } from "react-native-ui-lib"
 import { Image } from "expo-image"
 
-interface Props extends TabScreenProps<"Home"> {}
+interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
 export const DetailsScreen: FC<Props> = observer(function () {
   return (

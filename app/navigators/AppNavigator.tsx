@@ -11,6 +11,7 @@ import React from "react"
 import Config from "../config"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { RootNavigator, TabParamList } from "./RootNavigator"
+import { DetailsScreen } from "app/screens"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -27,6 +28,7 @@ import { RootNavigator, TabParamList } from "./RootNavigator"
  */
 export type AppStackParamList = {
   Root: TabParamList
+  MovieDetails: undefined
 }
 
 /**
@@ -53,6 +55,11 @@ const AppStack = observer(function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Root" component={RootNavigator} />
+      <Stack.Screen
+        options={{ presentation: "modal" }}
+        name="MovieDetails"
+        component={DetailsScreen}
+      />
     </Stack.Navigator>
   )
 })
