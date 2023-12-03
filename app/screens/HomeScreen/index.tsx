@@ -27,11 +27,11 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
   }, [])
 
   const renderTallMovieCard = useCallback(({ item: movie }: { item: IMovie }) => {
-    return <TallMovieCard information={movie} onPress={onMoviePress} />
+    return <TallMovieCard information={movie} onPress={() => onMoviePress(movie.id)} />
   }, [])
 
   const renderBigMovieCard = useCallback(({ item: movie }: { item: IMovie }) => {
-    return <BigMovieCard information={movie} onPress={onMoviePress} />
+    return <BigMovieCard information={movie} onPress={() => onMoviePress(movie.id)} />
   }, [])
 
   return (

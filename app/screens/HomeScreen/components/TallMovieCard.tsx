@@ -7,12 +7,12 @@ import { IMovie } from "app/services/api"
 
 type Props = {
   information: IMovie
-  onPress: (movieID: number) => void
+  onPress: () => void
 }
 
 export const TallMovieCard: FunctionComponent<Props> = ({ information: movie, onPress }) => {
   return (
-    <Pressable onPress={() => onPress(movie.id)}>
+    <Pressable onPress={onPress}>
       <View>
         <Image
           contentFit="cover"
