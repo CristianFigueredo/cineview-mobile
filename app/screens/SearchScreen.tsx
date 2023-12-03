@@ -13,7 +13,7 @@ interface SearchScreenProps extends TabScreenProps<"Search"> {}
 
 export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScreen() {
   return (
-    <Screen safeAreaEdges={["top"]} style={$root} preset="scroll">
+    <Screen safeAreaEdges={["top"]} contentContainerStyle={$root} preset="scroll">
       <SearchBar />
       <FlashList
         data={movies.results}

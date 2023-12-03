@@ -13,7 +13,7 @@ interface Props extends TabScreenProps<"WatchList"> {}
 
 export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
   return (
-    <Screen safeAreaEdges={["top"]} style={$root} preset="scroll">
+    <Screen safeAreaEdges={["top"]} contentContainerStyle={$root} preset="scroll">
       <FlashList
         data={movies.results}
         contentContainerStyle={{ paddingTop: Spacings.s8 }}
