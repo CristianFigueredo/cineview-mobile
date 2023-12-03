@@ -1,19 +1,3 @@
-# Welcome to your new ignited app!
-
-[![CircleCI](https://circleci.com/gh/infinitered/ignite.svg?style=svg)](https://circleci.com/gh/infinitered/ignite)
-
-## The latest and greatest boilerplate for Infinite Red opinions
-
-This is the boilerplate that [Infinite Red](https://infinite.red) uses as a way to test bleeding-edge changes to our React Native stack.
-
-Currently includes:
-
-- React Native
-- React Navigation
-- MobX State Tree
-- TypeScript
-- And more!
-
 ## Quick Start
 
 The Ignite boilerplate project's structure will look similar to this:
@@ -157,8 +141,32 @@ This directory will hold your Jest configs and mocks.
 
 Follow our [Maestro Setup](https://ignitecookbook.com/docs/recipes/MaestroSetup) recipe from the [Ignite Cookbook](https://ignitecookbook.com/)!
 
-## Previous Boilerplates
+## Questions:
 
-- [2018 aka Bowser](https://github.com/infinitered/ignite-bowser)
-- [2017 aka Andross](https://github.com/infinitered/ignite-andross)
-- [2016 aka Ignite 1.0](https://github.com/infinitered/ignite-ir-boilerplate-2016)
+### What does the single responsibility principle consist of? What's its purpose?
+
+the principle is that each module or portion of the code should be dedicated exclusively to a responsibility
+
+for example, if we have a Math module, it will only be dedicated to questions concerning mathematical problems, since this is its responsibility.
+
+and it should not do anything else, for example to do json parsing.
+
+### What characteristics does, in your opinion, a “good” code or clean code have?
+
+For me a good code is one that is simple to understand.
+
+a code that is written to be read by a human being in a quick way.
+
+a code that is abstract enough (in a good way), to be able to know what it does without having to see the detail.
+
+then this detail should be easily accessible if necessary, but it should not be
+
+### Detail how you would do everything that you have not completed.
+
+Write tests for everything primarily for the most important parts of the app, aiming in this case for 100% coverage.
+
+do the testing of the request handlers (using mocks)
+
+then write e2e tests for all flows.
+
+this will go a long way to see that all flows work and display correctly on a wide range of devices without having to do manual testing.
