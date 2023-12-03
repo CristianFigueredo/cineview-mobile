@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useState, useEffect, Fragment } from "react"
+import React, { FunctionComponent, useState, useEffect, Fragment, useCallback } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, ImageStyle, TextStyle, Alert } from "react-native"
-import { Screen } from "app/components"
+import { FullScreenLoader, Screen } from "app/components"
 import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
@@ -11,6 +11,8 @@ import { Image, ImageBackground } from "expo-image"
 import { useRoute } from "@react-navigation/native"
 import { api } from "app/services/api"
 import { IMovieDetail } from "app/services/api/entities"
+import { openLinkInBrowser } from "app/utils/openLinkInBrowser"
+import { TouchableOpacity } from "react-native-gesture-handler"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
@@ -33,7 +35,14 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
     fetchMovieDetails().catch(() => Alert.alert("Something went wrong"))
   }, [])
 
-  if (isLoading) return null
+  const showMovieTrailer = useCallback(async () => {
+    const videoKey = movieDetails?.videos.results.find((video) => video.type === "Trailer")?.key
+    if (!videoKey) return Alert.alert("No trailer found :(")
+
+    openLinkInBrowser("https://www.youtube.com/watch?v=" + videoKey)
+  }, [movieDetails])
+
+  if (isLoading) return <FullScreenLoader />
   if (!movieDetails) return null
 
   return (
@@ -45,7 +54,9 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
         }}
         blurRadius={1}
       >
-        <Icon name="play" size={35} color="white" />
+        <TouchableOpacity onPress={showMovieTrailer}>
+          <Icon name="play" size={35} color="white" />
+        </TouchableOpacity>
       </ImageBackground>
       <View style={$contentContainer}>
         <View style={$directionRow}>
@@ -154,4 +165,10 @@ const $genres: ViewStyle = {
   maxWidth: 200,
   flexDirection: "row",
   flexWrap: "wrap",
+}
+
+const $fullScreenLoader: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
 }
