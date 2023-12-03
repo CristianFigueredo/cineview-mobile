@@ -14,6 +14,7 @@ import { IMovieDetail } from "app/services/api/entities"
 import { openLinkInBrowser } from "app/utils/openLinkInBrowser"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { useStores } from "app/models"
+import { IMAGES } from "app/../assets"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
@@ -53,6 +54,8 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
     <Screen statusBarStyle="light" style={$root} preset="scroll">
       <ImageBackground
         style={$movieBackdrop}
+        placeholder={IMAGES.MOVIE_BACKDROP_PLACEHOLDER}
+        placeholderContentFit="cover"
         source={{
           uri: (POSTER_IMAGE_BASE_URL + movieDetails.backdrop_path).replace("original", "w300"),
         }}
@@ -66,6 +69,8 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
         <View style={$directionRow}>
           <Image
             style={$poster}
+            placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
+            placeholderContentFit="cover"
             source={{
               uri: (POSTER_IMAGE_BASE_URL + movieDetails.poster_path).replace("original", "w342"),
             }}
@@ -102,6 +107,8 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
                 <View marginR-s6>
                   <Image
                     style={$castPicture}
+                    placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
+                    placeholderContentFit="cover"
                     source={{
                       uri: (POSTER_IMAGE_BASE_URL + item.item.profile_path).replace(
                         "original",

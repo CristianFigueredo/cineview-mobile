@@ -2,6 +2,7 @@ import React, { FunctionComponent } from "react"
 import { ViewStyle, ImageStyle, TextStyle } from "react-native"
 import { Card, Text, View, Spacings, Colors } from "react-native-ui-lib"
 import { Image } from "expo-image"
+import { IMAGES } from "app/../assets"
 
 type Props = {
   posterURL: string
@@ -25,6 +26,8 @@ export const HorizontalMovieCard: FunctionComponent<Props> = ({
       <Image
         priority={index < 4 ? "high" : "low"}
         source={{ uri: posterURL.replace("original", "w342") }}
+        placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
+        placeholderContentFit="cover"
         style={$posterImage}
       />
       <View style={$middleContainer}>

@@ -91,3 +91,4 @@ web-build/
 *.env
 
 /coverage
+/dist

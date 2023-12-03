@@ -48,7 +48,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         setIsLoading(false)
         setMoviesByCategory(moviesByCategory)
       } catch (error) {
-        console.tron.error("error: ", JSON.stringify(error))
         Alert.alert("An error occurred while fetching movies")
       }
     }
