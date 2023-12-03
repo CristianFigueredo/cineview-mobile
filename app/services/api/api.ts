@@ -5,11 +5,12 @@
  * See the [Backend API Integration](https://github.com/infinitered/ignite/blob/master/docs/Backend-API-Integration.md)
  * documentation for more details.
  */
-import { ApiResponse as APIResponse, ApiOkResponse, ApisauceInstance, create } from "apisauce"
+import { ApiResponse as APIResponse, ApisauceInstance, create } from "apisauce"
 import Config from "../../config"
-import type { ApiConfig } from "./api.types"
+import type { ApiConfig, IMoviesResponse } from "./api.types"
 import { IMovieDetail } from "./entities"
 import { getGeneralAPIProblem } from "./apiProblem"
+import { MoviesState } from "app/screens"
 
 /**
  * Configuring the apisauce instance.
@@ -61,7 +62,44 @@ export class Api {
       }
       return response.data
     },
-    getByCategory: () => [],
+    getAllByCategory: async (page: number): Promise<MoviesState> => {
+      const getByCategory = async (
+        category: "upcoming" | "top_rated" | "popular" | "now_playing",
+      ) => {
+        const response: APIResponse<IMoviesResponse> = await this.apisauce.get(
+          "movie/" + category,
+          {
+            page,
+            language: "en-US",
+          },
+        )
+        return response
+      }
+
+      const responses = await Promise.all([
+        getByCategory("popular"),
+        getByCategory("top_rated"),
+        getByCategory("upcoming"),
+        getByCategory("now_playing"),
+      ])
+
+      if (!responses.every((response) => response?.ok)) {
+        const problem = getGeneralAPIProblem(responses.filter((response) => !response.ok)[0])
+        if (problem) {
+          throw new Error(problem.kind)
+        }
+      }
+
+      if (!responses.every((response) => !!response?.data)) {
+        throw new Error("errors.no_data")
+      }
+      return {
+        popular: responses[0]?.data?.results ?? [],
+        topRated: responses[1]?.data?.results.slice(0, 6) ?? [],
+        upcoming: responses[2]?.data?.results.slice(0, 6) ?? [],
+        nowPlaying: responses[3]?.data?.results.slice(0, 6) ?? [],
+      }
+    },
     searchWith: () => [],
   }
 }
