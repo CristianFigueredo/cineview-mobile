@@ -5,14 +5,11 @@
  * See the [Backend API Integration](https://github.com/infinitered/ignite/blob/master/docs/Backend-API-Integration.md)
  * documentation for more details.
  */
-import {
-  ApisauceInstance,
-  create,
-} from "apisauce"
+import { ApiResponse as APIResponse, ApisauceInstance, create } from "apisauce"
 import Config from "../../config"
-import type {
-  ApiConfig,
-} from "./api.types"
+import type { ApiConfig } from "./api.types"
+import { IMovieDetail } from "./entities"
+import { getGeneralAPIProblem } from "./apiProblem"
 
 /**
  * Configuring the apisauce instance.
@@ -40,10 +37,27 @@ export class Api {
       timeout: this.config.timeout,
       headers: {
         Accept: "application/json",
+        Authorization: `Bearer ${Config.API_KEY}`,
       },
     })
   }
 
+  movies = {
+    getDetailsWith: async (id: string) => {
+      const response: APIResponse<IMovieDetail> = await this.apisauce.get(`movie/${id}`, {
+        append_to_response: "videos,credits",
+        language: "en-US",
+      })
+
+      if (!response.ok) {
+        const problem = getGeneralAPIProblem(response)
+        return problem
+      }
+      return response.data
+    },
+    getByCategory: () => [],
+    searchWith: () => [],
+  }
 }
 
 // Singleton instance of the API for convenience
