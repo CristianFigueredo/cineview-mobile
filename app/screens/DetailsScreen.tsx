@@ -1,11 +1,18 @@
-import React, { FunctionComponent, useState, useEffect, Fragment, useCallback } from "react"
+import React, {
+  FunctionComponent,
+  useState,
+  useEffect,
+  Fragment,
+  useCallback,
+  PropsWithChildren,
+} from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, ImageStyle, TextStyle, Alert } from "react-native"
 import { FullScreenLoader, Screen } from "app/components"
 import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
-import Icon from "@expo/vector-icons/AntDesign"
+import Icon from "@expo/vector-icons/EvilIcons"
 import { Text, Colors, Spacings, Chip, View, Button } from "react-native-ui-lib"
 import { Image, ImageBackground } from "expo-image"
 import { useRoute } from "@react-navigation/native"
@@ -61,7 +68,9 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
         blurRadius={1}
       >
         <TouchableOpacity onPress={showMovieTrailer}>
-          <Icon name="play" size={35} color="white" />
+          <IconWrapper size="big">
+            <Icon name="play" size={45} color="white" />
+          </IconWrapper>
         </TouchableOpacity>
       </ImageBackground>
       <View style={$contentContainer}>
@@ -139,6 +148,35 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
   )
 })
 
+const iconWrapperSizes: Record<string, ViewStyle> = {
+  big: {
+    width: 65,
+    height: 65,
+    borderRadius: 32.5,
+  },
+  small: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+  },
+}
+
+type IconWrapperSize = keyof typeof iconWrapperSizes
+
+type IconWrapperProps = PropsWithChildren<{
+  size?: IconWrapperSize
+  style?: ViewStyle
+}>
+const IconWrapper: FunctionComponent<IconWrapperProps> = ({ children, size = "big", style }) => (
+  <View style={[$iconWrapper, iconWrapperSizes[size], style]}>{children}</View>
+)
+
+const $iconWrapper: ViewStyle = {
+  borderRadius: 32.5,
+  backgroundColor: "rgba(0,0,0,0.2)",
+  justifyContent: "center",
+  alignItems: "center",
+}
 const $root: ViewStyle = {
   flex: 1,
 }
