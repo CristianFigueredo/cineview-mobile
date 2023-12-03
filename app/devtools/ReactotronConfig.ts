@@ -11,6 +11,7 @@ import { mst } from "reactotron-mst"
 
 import { clear } from "app/utils/storage"
 import { goBack, resetRoot, navigate } from "app/navigators/navigationUtilities"
+import { Image } from "expo-image"
 
 import { Reactotron } from "./ReactotronClient"
 
@@ -54,6 +55,17 @@ reactotron.onCustomCommand({
   handler: () => {
     Reactotron.log("Showing React Native dev menu")
     NativeModules.DevMenu.show()
+  },
+})
+
+reactotron.onCustomCommand({
+  title: "Clear Images Cache (expo-image)",
+  description: "Clears the cache on disk and in memory",
+  command: "clearExpoImageCache",
+  handler: () => {
+    Reactotron.log("Cleaning Image cache (expo-image)")
+    Image.clearDiskCache()
+    Image.clearMemoryCache()
   },
 })
 
