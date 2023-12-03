@@ -43,6 +43,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         renderItem={TallMovieCard}
         keyExtractor={(item) => item.id.toString()}
         horizontal
+        showsHorizontalScrollIndicator={false}
       />
       <Text style={$categoryLabel}>{translate("homeScreen.categories.nowPlaying")}</Text>
       <FlatList
@@ -51,6 +52,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         /* @ts-ignore */
         renderItem={TallMovieCard}
         keyExtractor={(item) => item.id.toString()}
+        showsHorizontalScrollIndicator={false}
         horizontal
       />
       <Text style={$categoryLabel}>{translate("homeScreen.categories.upcoming")}</Text>
@@ -60,6 +62,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
         /* @ts-ignore */
         renderItem={TallMovieCard}
         keyExtractor={(item) => item.id.toString()}
+        showsHorizontalScrollIndicator={false}
         horizontal
       />
     </Screen>

@@ -16,7 +16,7 @@ export const TallMovieCard: FunctionComponent<Props> = ({ item: movie }) => {
       <Image
         resizeMode="cover"
         style={$poster}
-        source={{ uri: POSTER_IMAGE_BASE_URL + movie.poster_path }}
+        source={{ uri: (POSTER_IMAGE_BASE_URL + movie.poster_path).replace("original", "w342") }}
       />
       <Text style={$title}>{movie.title.slice(0, TITLE_MAX_LENGTH)}</Text>
     </View>

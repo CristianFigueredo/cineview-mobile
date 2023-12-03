@@ -17,7 +17,7 @@ export const HorizontalMovieCard: FunctionComponent<Props> = ({
 }) => {
   return (
     <Card key={1} style={$container}>
-      <Image source={{ uri: posterURL }} style={$posterImage} />
+      <Image source={{ uri: posterURL.replace("original", "w342") }} style={$posterImage} />
       <View style={$middleContainer}>
         <Text style={$titleLabel}>{title.length > 35 ? title.slice(0, 32) + "..." : title}</Text>
         <Text style={$directorLabel}>{overview?.slice(0, 90)}...</Text>

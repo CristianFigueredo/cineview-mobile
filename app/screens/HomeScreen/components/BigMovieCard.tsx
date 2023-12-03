@@ -15,7 +15,7 @@ export const BigMovieCard: FunctionComponent<Props> = ({ item: movie }) => {
       <Image
         resizeMode="cover"
         style={$poster}
-        source={{ uri: POSTER_IMAGE_BASE_URL + movie.poster_path }}
+        source={{ uri: (POSTER_IMAGE_BASE_URL + movie.poster_path).replace("original", "w500") }}
       />
     </View>
   )
