@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState, useEffect, Fragment } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert, Platform } from "react-native"
+import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert } from "react-native"
 import { FullScreenLoader, Screen } from "app/components"
 import Carousel from "react-native-snap-carousel"
 import { TabScreenProps } from "app/navigators/RootNavigator"
@@ -157,7 +157,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
 })
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window")
-const isAndroid = Platform.OS === "android"
 
 const $root: ViewStyle = { paddingBottom: Spacings.s10 }
 
@@ -185,6 +184,6 @@ const $disableMarginTop: TextStyle = {
 }
 
 const $carouselContentContainer: ViewStyle = {
-  paddingLeft: isAndroid ? SCREEN_WIDTH * 0.15 : SCREEN_WIDTH * 0.1,
+  paddingLeft: Spacings.s6,
   paddingVertical: Spacings.s10,
 }
