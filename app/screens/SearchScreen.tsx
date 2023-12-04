@@ -21,7 +21,7 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
   const navigation = useNavigation()
 
   const onMoviePress = useCallback((movieID: number) => {
-    // @ts-ignore TODO: remove this
+    // @ts-ignore TODO: fix this type error
     navigation.navigate("MovieDetails", { movieID })
   }, [])
 

@@ -22,7 +22,7 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
     console.tron.log(watchListStore)
   })
   const onMoviePress = useCallback((movieID: number) => {
-    // @ts-ignore TODO: remove this
+    // @ts-ignore TODO: fix this type error
     navigation.navigate("MovieDetails", { movieID })
   }, [])
 
@@ -51,7 +51,13 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
             contentContainerStyle={{ paddingTop: Spacings.s8 }}
             renderItem={renderHorizontalMovieCard}
             estimatedItemSize={180}
-            ListEmptyComponent={EmptyStateFullScreen}
+            ListEmptyComponent={() => (
+              <EmptyStateFullScreen
+                // @ts-ignore TODO: fix this type error
+                button={{ onPress: () => navigation.navigate("Home"), label: "Show Movies" }}
+                message="Start Building Your Film Collection"
+              />
+            )}
           />
         )}
       </Observer>

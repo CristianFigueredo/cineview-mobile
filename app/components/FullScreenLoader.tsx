@@ -1,10 +1,12 @@
 import React from "react"
-import { View, ActivityIndicator, ViewStyle } from "react-native"
+import { View, ViewStyle } from "react-native"
+import { Bounce } from "react-native-animated-spinkit"
+import { Colors } from "react-native-ui-lib"
 
 export const FullScreenLoader = () => {
   return (
     <View style={$fullScreenLoader}>
-      <ActivityIndicator color={"black"} />
+      <Bounce size={33} color={Colors.primary} />
     </View>
   )
 }
