@@ -36,10 +36,9 @@ type ImageID = keyof typeof images
 
 const defaultMessage = "Nothing to show for now :)"
 
-const { width, height } = Dimensions.get("window")
+const { height } = Dimensions.get("window")
 
 const $root: ViewStyle = {
-  width,
   height: height * 0.6,
   flex: 1,
   justifyContent: "center",
