@@ -22,6 +22,7 @@ import { openLinkInBrowser } from "app/utils/openLinkInBrowser"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { useStores } from "app/models"
 import { IMAGES } from "app/../assets"
+import truncate from "lodash.truncate"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
@@ -107,7 +108,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
               Cast
             </Text>
             <FlashList
-              data={movieDetails.credits.cast}
+              data={cast}
               horizontal
               showsHorizontalScrollIndicator={false}
               estimatedItemSize={100}
@@ -125,7 +126,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
                     }}
                   />
                   <Text style={$castName} marginT-s1>
-                    {item.item.name.slice(0, 23)}
+                    {truncate(item.item.name, { length: 13 })}
                   </Text>
                 </View>
               )}
