@@ -97,7 +97,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           onPress={() => navigation.navigate("Search")}
           animate={motiScalePressFeedback}
         >
-          <Icon name="search" size={24} />
+          <Icon name="search" size={22} />
         </MotiPressable>
       </View>
       {moviesByCategory.popular.length > 0 && (
