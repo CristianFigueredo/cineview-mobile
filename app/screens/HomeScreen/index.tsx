@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState, useEffect, Fragment } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert } from "react-native"
+import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert, Platform } from "react-native"
 import { FullScreenLoader, Screen } from "app/components"
 import Carousel from "react-native-snap-carousel"
 import { TabScreenProps } from "app/navigators/RootNavigator"
@@ -12,8 +12,6 @@ import { MotiPressable } from "moti/interactions"
 import { useNavigation } from "@react-navigation/native"
 import { IMovie, api } from "app/services/api"
 import * as storage from "app/utils/storage"
-
-const { width } = Dimensions.get("window")
 
 interface HomeScreenProps extends TabScreenProps<"Home"> {}
 
@@ -107,12 +105,12 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           data={moviesByCategory.popular}
           loop
           layout="stack"
-          containerCustomStyle={{ marginLeft: Spacings.s8 }}
-          layoutCardOffset={22}
+          contentContainerCustomStyle={$carouselContentContainer}
+          layoutCardOffset={20}
           // @ts-ignore TODO: fix this type error
           renderItem={renderBigMovieCard}
-          sliderWidth={width}
-          itemWidth={width}
+          sliderWidth={SCREEN_WIDTH}
+          itemWidth={SCREEN_WIDTH}
         />
       )}
       {moviesByCategory.topRated.length > 0 && (
@@ -160,6 +158,9 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
   )
 })
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window")
+const isAndroid = Platform.OS === "android"
+
 const $root: ViewStyle = { paddingBottom: Spacings.s10 }
 
 const $title: TextStyle = {
@@ -183,4 +184,8 @@ const $header: ViewStyle = {
 
 const $disableMarginTop: TextStyle = {
   marginTop: 0,
+}
+
+const $carouselContentContainer: ViewStyle = {
+  paddingLeft: isAndroid ? SCREEN_WIDTH * 0.15 : SCREEN_WIDTH * 0.1,
 }

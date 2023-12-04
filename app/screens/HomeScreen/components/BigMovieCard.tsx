@@ -37,6 +37,7 @@ const $poster: ImageStyle = {
 }
 
 const $posterContainer: ViewStyle = {
+  width: 300,
   justifyContent: "center",
   marginTop: Spacings.s4,
   height: 520,
