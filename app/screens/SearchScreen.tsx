@@ -91,7 +91,7 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
       {!isLoading && (
         <FlashList
           data={movies}
-          contentContainerStyle={{ paddingTop: Spacings.s8 }}
+          contentContainerStyle={{ paddingTop: Spacings.s10 * 1.2 }}
           renderItem={renderHorizontalMovieCard}
           showsVerticalScrollIndicator={false}
           estimatedItemSize={180}

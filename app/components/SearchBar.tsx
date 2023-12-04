@@ -23,7 +23,7 @@ export const SearchBar: FunctionComponent<Props> = ({ onQueryChange }) => {
 
 const $container: ViewStyle = {
   padding: Spacings.s4,
-  marginBottom: Spacings.s8,
+  marginBottom: Spacings.s2,
   flexDirection: "row",
 }
 
