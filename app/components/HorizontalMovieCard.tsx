@@ -3,6 +3,7 @@ import { ViewStyle, ImageStyle, TextStyle } from "react-native"
 import { Card, Text, View, Spacings, Colors } from "react-native-ui-lib"
 import { Image } from "expo-image"
 import { IMAGES } from "app/../assets"
+import truncate from "lodash.truncate"
 
 type Props = {
   posterURL: string
@@ -31,8 +32,10 @@ export const HorizontalMovieCard: FunctionComponent<Props> = ({
         style={$posterImage}
       />
       <View style={$middleContainer}>
-        <Text style={$titleLabel}>{title.length > 35 ? title.slice(0, 32) + "..." : title}</Text>
-        <Text style={$directorLabel}>{overview?.slice(0, 90)}...</Text>
+        <Text style={$titleLabel} text50M>
+          {truncate(title, { length: 25 })}
+        </Text>
+        <Text style={$overview}>{overview?.slice(0, 90)}...</Text>
       </View>
 
       <Text style={$voteAverageLabel}>{voteAverage.toFixed(1)}</Text>
@@ -64,21 +67,21 @@ const $voteAverageLabel: TextStyle = {
 
 const $titleLabel: TextStyle = {
   color: Colors.$textPrimary,
-  fontWeight: "800",
-  fontSize: 20,
   marginBottom: Spacings.s1,
   textAlign: "center",
 }
 
-const $directorLabel: TextStyle = {
+const $overview: TextStyle = {
   fontWeight: "400",
   fontSize: 12,
   color: Colors.$textNeutral,
+  textAlign: "center",
+  marginTop: Spacings.s1,
 }
 
 const $middleContainer: ViewStyle = {
   flex: 1,
   justifyContent: "center",
   alignItems: "center",
-  paddingHorizontal: Spacings.s2,
+  paddingHorizontal: Spacings.s3,
 }
