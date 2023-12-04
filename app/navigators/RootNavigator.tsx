@@ -6,7 +6,7 @@ import * as Screens from "../screens"
 import { Colors } from "react-native-ui-lib"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 import { AnimatedTabBarNavigator, DotSize } from "react-native-animated-nav-tab-bar"
-import Icon from "@expo/vector-icons/Feather"
+import Icon from "@expo/vector-icons/Octicons"
 
 type TabBarIconProps = {
   focused: boolean
@@ -19,6 +19,8 @@ export type TabParamList = {
   Search: undefined
   WatchList: undefined
 }
+
+const TAB_ICON_SIZE = 20
 
 /**
  * Helper for automatically generating navigation prop types for each route.
@@ -61,7 +63,9 @@ export function RootNavigator() {
         component={Screens.HomeScreen}
         options={{
           tabBarLabel: translate("rootNavigator.homeTabLabel"),
-          tabBarIcon: ({ color }: TabBarIconProps) => <Icon name="home" size={23} color={color} />,
+          tabBarIcon: ({ color }: TabBarIconProps) => (
+            <Icon name="home" size={TAB_ICON_SIZE} color={color} />
+          ),
         }}
       />
 
@@ -71,7 +75,7 @@ export function RootNavigator() {
         options={{
           tabBarLabel: translate("rootNavigator.searchTabLabel"),
           tabBarIcon: ({ color }: TabBarIconProps) => (
-            <Icon name="search" size={23} color={color} />
+            <Icon name="search" size={TAB_ICON_SIZE} color={color} />
           ),
         }}
       />
@@ -81,7 +85,9 @@ export function RootNavigator() {
         component={Screens.WatchListScreen}
         options={{
           tabBarLabel: translate("rootNavigator.watchListTabLabel"),
-          tabBarIcon: ({ color }: TabBarIconProps) => <Icon name="heart" size={23} color={color} />,
+          tabBarIcon: ({ color }: TabBarIconProps) => (
+            <Icon name="heart" size={TAB_ICON_SIZE} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>
