@@ -33,7 +33,6 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
     const tryToGetLocalMoviesByCategory = async () => {
       try {
         const localMovies = await storage.loadString("moviesByCategory")
-        console.tron.log("localMovies", localMovies)
         if (localMovies) {
           setMovies((JSON.parse(localMovies)?.upcoming ?? []) as IMovie[])
         }
@@ -42,7 +41,6 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
       }
     }
     const fetchMovies = async () => {
-      console.tron.log("query changed")
       try {
         const movies = await api.movies.searchWith(query)
         setMovies(movies)

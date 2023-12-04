@@ -44,7 +44,6 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
 
       let details
       const localMovieDetails = await storage.loadString(localMovieKey)
-      console.tron.log("localMovieDetails", localMovieDetails)
       if (localMovieDetails) {
         details = JSON.parse(localMovieDetails) as IMovieDetail
       } else {

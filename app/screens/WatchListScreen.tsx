@@ -18,9 +18,7 @@ interface Props extends TabScreenProps<"WatchList"> {}
 export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
   const navigation = useNavigation()
   const { watchListStore } = useStores()
-  autorun(() => {
-    console.tron.log(watchListStore)
-  })
+  autorun(() => {})
   const onMoviePress = useCallback((movieID: number) => {
     // @ts-ignore TODO: fix this type error
     navigation.navigate("MovieDetails", { movieID })
