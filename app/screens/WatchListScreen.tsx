@@ -10,7 +10,6 @@ import { FlashList } from "@shopify/flash-list"
 import { IMovie } from "app/services/api"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "app/models"
-import { autorun } from "mobx"
 import { getSnapshot } from "mobx-state-tree"
 
 interface Props extends TabScreenProps<"WatchList"> {}
@@ -18,7 +17,6 @@ interface Props extends TabScreenProps<"WatchList"> {}
 export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
   const navigation = useNavigation()
   const { watchListStore } = useStores()
-  autorun(() => {})
   const onMoviePress = useCallback((movieID: number) => {
     // @ts-ignore TODO: fix this type error
     navigation.navigate("MovieDetails", { movieID })
