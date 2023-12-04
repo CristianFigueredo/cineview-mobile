@@ -4,7 +4,6 @@ import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert } from "react-n
 import { FullScreenLoader, Screen } from "app/components"
 import Carousel from "react-native-snap-carousel"
 import { TabScreenProps } from "app/navigators/RootNavigator"
-import { movies } from "app/data/placeholders/movies"
 import { Spacings, Text } from "react-native-ui-lib"
 import { SimpleLineIcons } from "@expo/vector-icons"
 import { TallMovieCard, BigMovieCard } from "./components"
@@ -83,7 +82,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
   )
 
   if (isLoading) return <FullScreenLoader />
-  if (!movies) return null
 
   return (
     <Screen contentContainerStyle={$root} safeAreaEdges={["top"]} preset="scroll">
