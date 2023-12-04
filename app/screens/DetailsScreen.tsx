@@ -15,7 +15,7 @@ import { FlashList } from "@shopify/flash-list"
 import Icon from "@expo/vector-icons/Octicons"
 import { Text, Colors, Spacings, Chip, View, Button } from "react-native-ui-lib"
 import { Image, ImageBackground } from "expo-image"
-import { useRoute } from "@react-navigation/native"
+import { useNavigation, useRoute } from "@react-navigation/native"
 import { api } from "app/services/api"
 import { IMovieDetail } from "app/services/api/entities"
 import { openLinkInBrowser } from "app/utils/openLinkInBrowser"
@@ -35,6 +35,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
   const {
     watchListStore: { addMovieToWatchList, removeMovieFromWatchList, isMovieInWatchList },
   } = useStores()
+  const navigation = useNavigation()
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -71,6 +72,9 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
 
   return (
     <Screen statusBarStyle="light" style={$root} preset="scroll">
+      <IconWrapper onPress={navigation.goBack} size="small" style={$closeIconWrapper}>
+        <Icon size={25} color="white" name="x" />
+      </IconWrapper>
       <ImageBackground
         style={$movieBackdrop}
         placeholder={IMAGES.MOVIE_BACKDROP_PLACEHOLDER}
@@ -80,11 +84,9 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
         }}
         blurRadius={1}
       >
-        <TouchableOpacity onPress={showMovieTrailer}>
-          <IconWrapper size="small">
-            <Icon name="play" size={25} color="white" />
-          </IconWrapper>
-        </TouchableOpacity>
+        <IconWrapper size="small" onPress={showMovieTrailer}>
+          <Icon name="play" size={25} color="white" />
+        </IconWrapper>
       </ImageBackground>
       <View style={$contentContainer}>
         <View style={$directionRow}>
@@ -179,9 +181,17 @@ type IconWrapperSize = keyof typeof iconWrapperSizes
 type IconWrapperProps = PropsWithChildren<{
   size?: IconWrapperSize
   style?: ViewStyle
+  onPress?: () => void
 }>
-const IconWrapper: FunctionComponent<IconWrapperProps> = ({ children, size = "big", style }) => (
-  <View style={[$iconWrapper, iconWrapperSizes[size], style]}>{children}</View>
+const IconWrapper: FunctionComponent<IconWrapperProps> = ({
+  children,
+  size = "big",
+  style,
+  onPress,
+}) => (
+  <TouchableOpacity onPress={onPress}>
+    <View style={[$iconWrapper, iconWrapperSizes[size], style]}>{children}</View>
+  </TouchableOpacity>
 )
 
 const $iconWrapper: ViewStyle = {
@@ -241,4 +251,11 @@ const $titleAndDetailsContainer: ViewStyle = {
   marginLeft: Spacings.s4,
   marginTop: Spacings.s4,
   maxWidth: 200,
+}
+
+const $closeIconWrapper: ViewStyle = {
+  position: "absolute",
+  top: 50,
+  left: 20,
+  zIndex: 100,
 }
