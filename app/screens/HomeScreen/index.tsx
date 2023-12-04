@@ -5,7 +5,7 @@ import { FullScreenLoader, Screen } from "app/components"
 import Carousel from "react-native-snap-carousel"
 import { TabScreenProps } from "app/navigators/RootNavigator"
 import { Spacings, Text } from "react-native-ui-lib"
-import { SimpleLineIcons } from "@expo/vector-icons"
+import Icon from "@expo/vector-icons/Octicons"
 import { TallMovieCard, BigMovieCard } from "./components"
 import { translate } from "app/i18n"
 import { MotiPressable } from "moti/interactions"
@@ -97,16 +97,14 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
             }
           }}
         >
-          <SimpleLineIcons name="magnifier" size={24} />
+          <Icon name="search" size={24} />
         </MotiPressable>
       </View>
       {moviesByCategory.popular.length > 0 && (
         <Carousel
-          data={moviesByCategory.popular}
-          loop
+          data={moviesByCategory.popular.slice(0, 8)}
           layout="stack"
           contentContainerCustomStyle={$carouselContentContainer}
-          layoutCardOffset={20}
           // @ts-ignore TODO: fix this type error
           renderItem={renderBigMovieCard}
           sliderWidth={SCREEN_WIDTH}
@@ -188,4 +186,5 @@ const $disableMarginTop: TextStyle = {
 
 const $carouselContentContainer: ViewStyle = {
   paddingLeft: isAndroid ? SCREEN_WIDTH * 0.15 : SCREEN_WIDTH * 0.1,
+  paddingVertical: Spacings.s10,
 }
