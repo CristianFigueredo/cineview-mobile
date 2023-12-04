@@ -79,6 +79,13 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
     [],
   )
 
+  const motiScalePressFeedback = useCallback(({ pressed }: { pressed: boolean }) => {
+    "worklet"
+    return {
+      scale: pressed ? 0.8 : 1,
+    }
+  }, [])
+
   if (isLoading) return <FullScreenLoader />
 
   return (
@@ -86,16 +93,9 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
       <View style={$header}>
         <Text style={$title}>{translate("homeScreen.title")}</Text>
         <MotiPressable
-          onPress={() => {
-            // @ts-ignore TODO: fix this type error
-            navigation.navigate("Search")
-          }}
-          animate={({ pressed }) => {
-            "worklet"
-            return {
-              scale: pressed ? 0.8 : 1,
-            }
-          }}
+          /* @ts-ignore TODO: fix types */
+          onPress={() => navigation.navigate("Search")}
+          animate={motiScalePressFeedback}
         >
           <Icon name="search" size={24} />
         </MotiPressable>

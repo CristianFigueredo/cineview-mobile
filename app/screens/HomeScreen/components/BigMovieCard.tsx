@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react"
 import { ViewStyle, ImageStyle, Pressable } from "react-native"
-import { Spacings, View } from "react-native-ui-lib"
+import { View } from "react-native-ui-lib"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { Image } from "expo-image"
 import { IMovie } from "app/services/api"
