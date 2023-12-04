@@ -29,7 +29,7 @@ export const EmptyStateFullScreen: FunctionComponent<Props> = ({
 
 const images = {
   empty: IMAGES.TUMBLEWEED_IN_THE_DESERT,
-  not_found: IMAGES.TUMBLEWEED_IN_THE_DESERT,
+  not_found: IMAGES.NOT_FOUND,
 } as const
 
 type ImageID = keyof typeof images

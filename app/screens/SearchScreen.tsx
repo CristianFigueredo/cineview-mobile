@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react"
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { Alert, ViewStyle } from "react-native"
 import { EmptyStateFullScreen, FullScreenLoader, Screen, SearchBar } from "app/components"
@@ -10,6 +10,7 @@ import { FlashList } from "@shopify/flash-list"
 import { IMovie, api } from "app/services/api"
 import { useNavigation } from "@react-navigation/native"
 import debounce from "lodash.debounce"
+import * as storage from "app/utils/storage"
 
 interface SearchScreenProps extends TabScreenProps<"Search"> {}
 
@@ -17,6 +18,7 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
   const [query, setQuery] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [movies, setMovies] = useState<IMovie[]>([])
+  const isFirstRender = useRef(true)
 
   const navigation = useNavigation()
 
@@ -28,6 +30,17 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
   const debouncedSetQuery = useMemo(() => debounce(setQuery, 800), [])
 
   useEffect(() => {
+    const tryToGetLocalMoviesByCategory = async () => {
+      try {
+        const localMovies = await storage.loadString("moviesByCategory")
+        console.tron.log("localMovies", localMovies)
+        if (localMovies) {
+          setMovies((JSON.parse(localMovies)?.upcoming ?? []) as IMovie[])
+        }
+      } catch {
+        Alert.alert("Error", "Something went wrong, please try again later.")
+      }
+    }
     const fetchMovies = async () => {
       console.tron.log("query changed")
       try {
@@ -38,6 +51,11 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
       } finally {
         setIsLoading(false)
       }
+    }
+
+    if (isFirstRender.current || (!isFirstRender.current && !query)) {
+      tryToGetLocalMoviesByCategory()
+      isFirstRender.current = false
     }
 
     if (query) {
@@ -76,7 +94,12 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
           contentContainerStyle={{ paddingTop: Spacings.s8 }}
           renderItem={renderHorizontalMovieCard}
           estimatedItemSize={180}
-          ListEmptyComponent={EmptyStateFullScreen}
+          ListEmptyComponent={() => (
+            <EmptyStateFullScreen
+              message="Oops! That option isn't available."
+              imageID="not_found"
+            />
+          )}
         />
       )}
     </Screen>
