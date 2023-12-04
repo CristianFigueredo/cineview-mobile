@@ -23,6 +23,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { useStores } from "app/models"
 import { IMAGES } from "app/../assets"
 import truncate from "lodash.truncate"
+import * as storage from "app/utils/storage"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
@@ -38,13 +39,25 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       // @ts-ignore TODO: fix this type error
-      const details = await api.movies.getDetailsWith(route.params?.movieID)
-      console.tron.log(details.credits.cast)
+      const movieID = route.params?.movieID as string
+      const localMovieKey = `movieDetails[${movieID}]`
+
+      let details
+      const localMovieDetails = await storage.loadString(localMovieKey)
+      console.tron.log("localMovieDetails", localMovieDetails)
+      if (localMovieDetails) {
+        details = JSON.parse(localMovieDetails) as IMovieDetail
+      } else {
+        details = await api.movies.getDetailsWith(movieID)
+        storage.saveString(localMovieKey, JSON.stringify(details))
+      }
       setMovieDetails(details)
       setCast(details.credits.cast.filter((cast) => cast.profile_path !== null))
       setIsLoading(false)
     }
-    fetchMovieDetails().catch(() => Alert.alert("Something went wrong"))
+    fetchMovieDetails().catch(() =>
+      Alert.alert("Something went wrong! are connected to the internet?"),
+    )
   }, [])
 
   const showMovieTrailer = useCallback(async () => {
