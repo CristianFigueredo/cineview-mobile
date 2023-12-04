@@ -29,8 +29,9 @@ interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
 export const DetailsScreen: FunctionComponent<Props> = observer(function () {
   const [movieDetails, setMovieDetails] = useState<IMovieDetail>()
-  const [cast, setCast] = useState<IMovieDetail["credits"]["cast"]>([])
+  const [cast, setCast] = useState<CastMember>([])
   const [isLoading, setIsLoading] = React.useState(true)
+
   const route = useRoute()
   const {
     watchListStore: { addMovieToWatchList, removeMovieFromWatchList, isMovieInWatchList },
@@ -69,12 +70,25 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
 
   if (isLoading) return <FullScreenLoader />
   if (!movieDetails) return null
+  // TODO: fix types
+  const renderCastMemberCard = (item: any) => (
+    <View marginR-s6>
+      <Image
+        style={$castPicture}
+        placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
+        placeholderContentFit="cover"
+        source={{
+          uri: (POSTER_IMAGE_BASE_URL + item.item.profile_path).replace("original", "w185"),
+        }}
+      />
+      <Text style={$castName} marginT-s1>
+        {truncate(item.item.name, { length: 13 })}
+      </Text>
+    </View>
+  )
 
   return (
     <Screen statusBarStyle="light" style={$root} preset="scroll">
-      <IconWrapper onPress={navigation.goBack} size="small" style={$closeIconWrapper}>
-        <Icon size={25} color="white" name="x" />
-      </IconWrapper>
       <ImageBackground
         style={$movieBackdrop}
         placeholder={IMAGES.MOVIE_BACKDROP_PLACEHOLDER}
@@ -84,6 +98,9 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
         }}
         blurRadius={1}
       >
+        <IconWrapper onPress={navigation.goBack} size="small" style={$closeIconWrapper}>
+          <Icon size={25} color="white" name="x" />
+        </IconWrapper>
         <IconWrapper size="small" onPress={showMovieTrailer}>
           <Icon name="play" size={25} color="white" />
         </IconWrapper>
@@ -126,24 +143,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
               horizontal
               showsHorizontalScrollIndicator={false}
               estimatedItemSize={100}
-              renderItem={(item) => (
-                <View marginR-s6>
-                  <Image
-                    style={$castPicture}
-                    placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
-                    placeholderContentFit="cover"
-                    source={{
-                      uri: (POSTER_IMAGE_BASE_URL + item.item.profile_path).replace(
-                        "original",
-                        "w185",
-                      ),
-                    }}
-                  />
-                  <Text style={$castName} marginT-s1>
-                    {truncate(item.item.name, { length: 13 })}
-                  </Text>
-                </View>
-              )}
+              renderItem={renderCastMemberCard}
             />
           </Fragment>
         )}
@@ -162,6 +162,8 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
     </Screen>
   )
 })
+
+type CastMember = IMovieDetail["credits"]["cast"]
 
 const iconWrapperSizes: Record<string, ViewStyle> = {
   big: {
@@ -189,9 +191,9 @@ const IconWrapper: FunctionComponent<IconWrapperProps> = ({
   style,
   onPress,
 }) => (
-  <TouchableOpacity onPress={onPress}>
-    <View style={[$iconWrapper, iconWrapperSizes[size], style]}>{children}</View>
-  </TouchableOpacity>
+  <View onTouchEnd={onPress} style={[$iconWrapper, iconWrapperSizes[size], style]}>
+    {children}
+  </View>
 )
 
 const $iconWrapper: ViewStyle = {
@@ -201,6 +203,7 @@ const $iconWrapper: ViewStyle = {
 }
 const $root: ViewStyle = {
   flex: 1,
+  zIndex: 1,
 }
 
 const $movieBackdrop: ViewStyle = {
@@ -257,5 +260,5 @@ const $closeIconWrapper: ViewStyle = {
   position: "absolute",
   top: 50,
   left: 20,
-  zIndex: 100,
+  zIndex: 2,
 }
