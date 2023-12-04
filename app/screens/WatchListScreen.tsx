@@ -49,6 +49,7 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
           <FlashList
             data={getSnapshot(watchListStore.movies)}
             contentContainerStyle={{ paddingTop: Spacings.s8 }}
+            showsVerticalScrollIndicator={false}
             renderItem={renderHorizontalMovieCard}
             estimatedItemSize={180}
             ListEmptyComponent={() => (

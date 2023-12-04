@@ -93,6 +93,7 @@ export const SearchScreen: FC<SearchScreenProps> = observer(function SearchScree
           data={movies}
           contentContainerStyle={{ paddingTop: Spacings.s8 }}
           renderItem={renderHorizontalMovieCard}
+          showsVerticalScrollIndicator={false}
           estimatedItemSize={180}
           ListEmptyComponent={() => (
             <EmptyStateFullScreen

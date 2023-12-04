@@ -171,6 +171,8 @@ function ScreenWithScrolling(props: ScreenProps) {
         onLayout(e)
         ScrollViewProps?.onLayout?.(e)
       }}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
       onContentSizeChange={(w: number, h: number) => {
         onContentSizeChange(w, h)
         ScrollViewProps?.onContentSizeChange?.(w, h)
