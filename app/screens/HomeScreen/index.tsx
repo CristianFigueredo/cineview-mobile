@@ -12,6 +12,7 @@ import { translate } from "app/i18n"
 import { MotiPressable } from "moti/interactions"
 import { useNavigation } from "@react-navigation/native"
 import { IMovie, api } from "app/services/api"
+import * as storage from "app/utils/storage"
 
 const { width } = Dimensions.get("window")
 
@@ -44,13 +45,23 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
     const fetchMovies = async () => {
       try {
         const moviesByCategory = await api.movies.getAllByCategory(1)
+        storage.saveString("moviesByCategory", JSON.stringify(moviesByCategory))
         setIsLoading(false)
         setMoviesByCategory(moviesByCategory)
       } catch (error) {
         Alert.alert("An error occurred while fetching movies")
       }
     }
-    fetchMovies()
+    const main = async () => {
+      const localMoviesByCategory = await storage.loadString("moviesByCategory")
+      if (localMoviesByCategory) {
+        setMoviesByCategory(JSON.parse(localMoviesByCategory) as MoviesState)
+        setIsLoading(false)
+      } else {
+        fetchMovies()
+      }
+    }
+    main()
   }, [])
 
   const renderTallMovieCard = useCallback(
