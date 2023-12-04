@@ -12,7 +12,7 @@ import { FullScreenLoader, Screen } from "app/components"
 import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
-import Icon from "@expo/vector-icons/EvilIcons"
+import Icon from "@expo/vector-icons/Octicons"
 import { Text, Colors, Spacings, Chip, View, Button } from "react-native-ui-lib"
 import { Image, ImageBackground } from "expo-image"
 import { useRoute } from "@react-navigation/native"
@@ -81,8 +81,8 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
         blurRadius={1}
       >
         <TouchableOpacity onPress={showMovieTrailer}>
-          <IconWrapper size="big">
-            <Icon name="play" size={45} color="white" />
+          <IconWrapper size="small">
+            <Icon name="play" size={25} color="white" />
           </IconWrapper>
         </TouchableOpacity>
       </ImageBackground>
@@ -185,8 +185,7 @@ const IconWrapper: FunctionComponent<IconWrapperProps> = ({ children, size = "bi
 )
 
 const $iconWrapper: ViewStyle = {
-  borderRadius: 32.5,
-  backgroundColor: "rgba(0,0,0,0.2)",
+  backgroundColor: "rgba(0,0,0,0.3)",
   justifyContent: "center",
   alignItems: "center",
 }
