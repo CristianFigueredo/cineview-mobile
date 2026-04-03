@@ -7,7 +7,6 @@ import {
 } from "@react-navigation/native"
 import Config from "../config"
 import type { PersistNavigationConfig } from "../config/config.base"
-import { useIsMounted } from "../utils/useIsMounted"
 import type { AppStackParamList, NavigationProps } from "./AppNavigator"
 
 import * as storage from "../utils/storage"
@@ -108,8 +107,6 @@ function navigationRestoredDefaultState(persistNavigation: PersistNavigationConf
 export function useNavigationPersistence(storage: Storage, persistenceKey: string) {
   const [initialNavigationState, setInitialNavigationState] =
     useState<NavigationProps["initialState"]>()
-  const isMounted = useIsMounted()
-
   const initNavState = navigationRestoredDefaultState(Config.persistNavigation)
   const [isRestored, setIsRestored] = useState(initNavState)
 
@@ -140,7 +137,7 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
       const state = (await storage.load(persistenceKey)) as NavigationProps["initialState"] | null
       if (state) setInitialNavigationState(state)
     } finally {
-      if (isMounted()) setIsRestored(true)
+      setIsRestored(true)
     }
   }
 
