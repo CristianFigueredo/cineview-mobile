@@ -10,12 +10,6 @@
  * The app navigation resides in ./app/navigators, so head over there
  * if you're interested in adding screens and navigators.
  */
-if (__DEV__) {
-  // Load Reactotron configuration in development. We don't want to
-  // include this in our production bundle, so we are using `if (__DEV__)`
-  // to only execute this in development.
-  require("./devtools/ReactotronConfig.ts")
-}
 import "./i18n"
 import "./utils/ignoreWarnings"
 import React from "react"
