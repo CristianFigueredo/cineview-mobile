@@ -1,12 +1,13 @@
 /**
- * These are configuration settings for the dev environment.
+ * These are configuration settings for the development environment.
  *
- * Do not include API secrets in this file or anywhere in your JS.
+ * NOTE: Exposing API credentials client-side is not secure for production.
+ * In a real app these should be proxied through a backend. This is done
+ * directly here for the purposes of this coding challenge only.
  *
- * https://reactnative.dev/docs/security#storing-sensitive-info
+ * @see .env.example for setup instructions
  */
 export default {
   API_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
-  // TODO: @danger only for demonstration purposes
   API_KEY: process.env.EXPO_PUBLIC_AND_UNSAFE_API_KEY,
 }

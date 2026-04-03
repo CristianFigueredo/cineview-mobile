@@ -1,28 +1,32 @@
-/**
- * This file imports configuration objects from either the config.dev.js file
- * or the config.prod.js file depending on whether we are in __DEV__ or not.
- *
- * Note that we do not gitignore these files. Unlike on web servers, just because
- * these are not checked into your repo doesn't mean that they are secure.
- * In fact, you're shipping a JavaScript bundle with every
- * config variable in plain text. Anyone who downloads your app can easily
- * extract them.
- *
- * If you doubt this, just bundle your app, and then go look at the bundle and
- * search it for one of your config variable values. You'll find it there.
- *
- * Read more here: https://reactnative.dev/docs/security#storing-sensitive-info
- */
-import BaseConfig from "./config.base"
+import BaseConfig, { ConfigBaseProps } from "./config.base"
 import ProdConfig from "./config.prod"
 import DevConfig from "./config.dev"
 
-let ExtraConfig = ProdConfig
-
-if (__DEV__) {
-  ExtraConfig = DevConfig
+export interface AppConfig extends ConfigBaseProps {
+  API_URL: string
+  API_KEY: string
 }
 
-const Config = { ...BaseConfig, ...ExtraConfig }
+const { API_URL, API_KEY } = __DEV__ ? DevConfig : ProdConfig
+
+if (!API_URL || !API_KEY) {
+  const missing = [
+    !API_URL && "EXPO_PUBLIC_API_BASE_URL",
+    !API_KEY && "EXPO_PUBLIC_AND_UNSAFE_API_KEY",
+  ]
+    .filter(Boolean)
+    .join(", ")
+  console.error(
+    `[Config] Missing required environment variables: ${missing}\n` +
+      "Copy .env.example to .env and fill in the values.",
+  )
+  throw new Error(`[Config] Missing environment variables: ${missing}`)
+}
+
+const Config: AppConfig = {
+  ...BaseConfig,
+  API_URL,
+  API_KEY,
+}
 
 export default Config
