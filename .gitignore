@@ -70,7 +70,7 @@ buck-out/
 .vscode
 
 # Expo
-.expo/*
+.expo/
 bin/Exponent.app
 
 # If using Expo Go/Prebuild, uncomment these:
@@ -92,3 +92,6 @@ web-build/
 
 /coverage
 /dist
+
+# local files
+.local
