@@ -18,6 +18,6 @@ module.exports = ({ config }) => {
     runtimeVersion: {
       policy: "appVersion",
     },
-    plugins: [...existingPlugins, require("./plugins/withSplashScreen").withSplashScreen],
+    plugins: [...existingPlugins],
   }
 }
