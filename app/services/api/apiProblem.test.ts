@@ -1,72 +1,27 @@
-import { getGeneralAPIProblem as getGeneralApiProblem } from "./apiProblem"
-import { ApiErrorResponse } from "apisauce"
+import { getGeneralAPIProblem } from "./apiProblem"
 
-test("handles connection errors", () => {
-  expect(getGeneralApiProblem({ problem: "CONNECTION_ERROR" } as ApiErrorResponse<null>)).toEqual({
-    kind: "cannot-connect",
-    temporary: true,
-  })
+test("handles cancelled requests", () => {
+  expect(getGeneralAPIProblem(0)).toBeNull()
 })
 
-test("handles network errors", () => {
-  expect(getGeneralApiProblem({ problem: "NETWORK_ERROR" } as ApiErrorResponse<null>)).toEqual({
-    kind: "cannot-connect",
-    temporary: true,
-  })
+test("handles 5xx server errors", () => {
+  expect(getGeneralAPIProblem(500)).toEqual({ kind: "server" })
+  expect(getGeneralAPIProblem(503)).toEqual({ kind: "server" })
 })
 
-test("handles timeouts", () => {
-  expect(getGeneralApiProblem({ problem: "TIMEOUT_ERROR" } as ApiErrorResponse<null>)).toEqual({
-    kind: "timeout",
-    temporary: true,
-  })
+test("handles 401 unauthorized", () => {
+  expect(getGeneralAPIProblem(401)).toEqual({ kind: "unauthorized" })
 })
 
-test("handles server errors", () => {
-  expect(getGeneralApiProblem({ problem: "SERVER_ERROR" } as ApiErrorResponse<null>)).toEqual({
-    kind: "server",
-  })
+test("handles 403 forbidden", () => {
+  expect(getGeneralAPIProblem(403)).toEqual({ kind: "forbidden" })
 })
 
-test("handles unknown errors", () => {
-  expect(getGeneralApiProblem({ problem: "UNKNOWN_ERROR" } as ApiErrorResponse<null>)).toEqual({
-    kind: "unknown",
-    temporary: true,
-  })
+test("handles 404 not found", () => {
+  expect(getGeneralAPIProblem(404)).toEqual({ kind: "not-found" })
 })
 
-test("handles unauthorized errors", () => {
-  expect(
-    getGeneralApiProblem({ problem: "CLIENT_ERROR", status: 401 } as ApiErrorResponse<null>),
-  ).toEqual({
-    kind: "unauthorized",
-  })
-})
-
-test("handles forbidden errors", () => {
-  expect(
-    getGeneralApiProblem({ problem: "CLIENT_ERROR", status: 403 } as ApiErrorResponse<null>),
-  ).toEqual({
-    kind: "forbidden",
-  })
-})
-
-test("handles not-found errors", () => {
-  expect(
-    getGeneralApiProblem({ problem: "CLIENT_ERROR", status: 404 } as ApiErrorResponse<null>),
-  ).toEqual({
-    kind: "not-found",
-  })
-})
-
-test("handles other client errors", () => {
-  expect(
-    getGeneralApiProblem({ problem: "CLIENT_ERROR", status: 418 } as ApiErrorResponse<null>),
-  ).toEqual({
-    kind: "rejected",
-  })
-})
-
-test("handles cancellation errors", () => {
-  expect(getGeneralApiProblem({ problem: "CANCEL_ERROR" } as ApiErrorResponse<null>)).toBeNull()
+test("handles other 4xx errors", () => {
+  expect(getGeneralAPIProblem(418)).toEqual({ kind: "rejected" })
+  expect(getGeneralAPIProblem(422)).toEqual({ kind: "rejected" })
 })

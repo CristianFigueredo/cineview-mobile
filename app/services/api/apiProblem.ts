@@ -1,74 +1,40 @@
-import { ApiResponse } from "apisauce"
-
 export type GeneralApiProblem =
-  /**
-   * Times up.
-   */
+  /** Request timed out. Safe to retry. */
   | { kind: "timeout"; temporary: true }
-  /**
-   * Cannot connect to the server for some reason.
-   */
+  /** Cannot reach the server. Safe to retry. */
   | { kind: "cannot-connect"; temporary: true }
-  /**
-   * The server experienced a problem. Any 5xx error.
-   */
+  /** Any 5xx server error. */
   | { kind: "server" }
-  /**
-   * We're not allowed because we haven't identified ourself. This is 401.
-   */
+  /** 401 — not authenticated. */
   | { kind: "unauthorized" }
-  /**
-   * We don't have access to perform that request. This is 403.
-   */
+  /** 403 — not authorized. */
   | { kind: "forbidden" }
-  /**
-   * Unable to find that resource.  This is a 404.
-   */
+  /** 404 — resource not found. */
   | { kind: "not-found" }
-  /**
-   * All other 4xx series errors.
-   */
+  /** Any other 4xx client error. */
   | { kind: "rejected" }
-  /**
-   * Something truly unexpected happened. Most likely can try again. This is a catch all.
-   */
+  /** Unexpected error. Safe to retry. */
   | { kind: "unknown"; temporary: true }
-  /**
-   * The data we received is not in the expected format.
-   */
+  /** Response data was not in the expected format. */
   | { kind: "bad-data" }
 
 /**
- * Attempts to get a common cause of problems from an api response.
- *
- * @param response The api response.
+ * Maps an HTTP status code to a typed GeneralApiProblem.
+ * Returns null for cancelled requests (status 0).
  */
-export function getGeneralAPIProblem(response: ApiResponse<any>): GeneralApiProblem | null {
-  switch (response.problem) {
-    case "CONNECTION_ERROR":
-      return { kind: "cannot-connect", temporary: true }
-    case "NETWORK_ERROR":
-      return { kind: "cannot-connect", temporary: true }
-    case "TIMEOUT_ERROR":
-      return { kind: "timeout", temporary: true }
-    case "SERVER_ERROR":
-      return { kind: "server" }
-    case "UNKNOWN_ERROR":
-      return { kind: "unknown", temporary: true }
-    case "CLIENT_ERROR":
-      switch (response.status) {
-        case 401:
-          return { kind: "unauthorized" }
-        case 403:
-          return { kind: "forbidden" }
-        case 404:
-          return { kind: "not-found" }
-        default:
-          return { kind: "rejected" }
-      }
-    case "CANCEL_ERROR":
-      return null
-  }
+export function getGeneralAPIProblem(status: number): GeneralApiProblem | null {
+  if (status === 0) return null // cancelled / aborted
 
-  return null
+  if (status >= 500) return { kind: "server" }
+
+  switch (status) {
+    case 401:
+      return { kind: "unauthorized" }
+    case 403:
+      return { kind: "forbidden" }
+    case 404:
+      return { kind: "not-found" }
+    default:
+      return { kind: "rejected" }
+  }
 }

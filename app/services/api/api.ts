@@ -1,123 +1,91 @@
-/**
- * This Api class lets you define an API endpoint and methods to request
- * data and process it.
- *
- * See the [Backend API Integration](https://github.com/infinitered/ignite/blob/master/docs/Backend-API-Integration.md)
- * documentation for more details.
- */
-import { ApiResponse as APIResponse, ApisauceInstance, create } from "apisauce"
+import axios, { AxiosInstance } from "axios"
 import Config from "../../config"
 import type { ApiConfig, IMovie, IMoviesResponse } from "./api.types"
 import { IMovieDetail } from "./entities"
 import { getGeneralAPIProblem } from "./apiProblem"
 import { MoviesState as IMoviesByCategory } from "app/screens"
 
-/**
- * Configuring the apisauce instance.
- */
-export const DEFAULT_API_CONFIG: ApiConfig = {
+const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
   timeout: 10000,
 }
 
 /**
- * Manages all requests to the API. You can use this class to build out
- * various requests that you need to call from your backend API.
+ * Manages all requests to the TMDB API using axios.
+ * Handles base URL composition, authentication headers, timeout,
+ * and maps HTTP error codes to typed problem kinds.
  */
 export class Api {
-  apisauce: ApisauceInstance
-  config: ApiConfig
+  private client: AxiosInstance
 
-  /**
-   * Set up our API instance. Keep this lightweight!
-   */
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
-    this.config = config
-    this.apisauce = create({
-      baseURL: this.config.url,
-      timeout: this.config.timeout,
+    this.client = axios.create({
+      baseURL: config.url,
+      timeout: config.timeout,
       headers: {
         Accept: "application/json",
+        // NOTE: Exposing this token client-side is not secure for production.
+        // In a real app it should be proxied through a backend.
         Authorization: `Bearer ${Config.API_KEY}`,
       },
     })
   }
 
+  /**
+   * Makes an authenticated GET request to the API.
+   * Automatically appends query params and throws a typed error on
+   * non-2xx responses.
+   */
+  private async get<T>(path: string, params?: Record<string, unknown>): Promise<T> {
+    try {
+      const response = await this.client.get<T>(path, { params })
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const problem = getGeneralAPIProblem(error.response.status)
+        throw new Error(problem?.kind ?? "unknown")
+      }
+      if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
+        throw new Error("timeout")
+      }
+      throw error
+    }
+  }
+
   movies = {
-    getDetailsWith: async (id: string): Promise<IMovieDetail> => {
-      const response: APIResponse<IMovieDetail> = await this.apisauce.get(`movie/${id}`, {
+    /** Fetches full movie details including videos and credits. */
+    getItemDetails: async (id: string): Promise<IMovieDetail> => {
+      return this.get<IMovieDetail>(`movie/${id}`, {
         append_to_response: "videos,credits",
         language: "en-US",
       })
-
-      if (!response.ok) {
-        const problem = getGeneralAPIProblem(response)
-        if (problem) {
-          throw new Error(problem.kind)
-        }
-      }
-
-      if (!response.data) {
-        throw new Error("errors.no_data")
-      }
-      return response.data
     },
-    getAllByCategory: async (page: number): Promise<IMoviesByCategory> => {
-      const getMoviesByCategory = async (
-        category: "upcoming" | "top_rated" | "popular" | "now_playing",
-      ) => {
-        const response: APIResponse<IMoviesResponse> = await this.apisauce.get(
-          "movie/" + category,
-          {
-            page,
-            language: "en-US",
-          },
-        )
-        return response
-      }
 
-      const responses = await Promise.all([
-        getMoviesByCategory("popular"),
-        getMoviesByCategory("top_rated"),
-        getMoviesByCategory("upcoming"),
-        getMoviesByCategory("now_playing"),
+    /** Fetches movies across all four categories in parallel for the home screen. */
+    getHomeItemsByCategory: async (page: number): Promise<IMoviesByCategory> => {
+      const [popular, topRated, upcoming, nowPlaying] = await Promise.all([
+        this.get<IMoviesResponse>("movie/popular", { page, language: "en-US" }),
+        this.get<IMoviesResponse>("movie/top_rated", { page, language: "en-US" }),
+        this.get<IMoviesResponse>("movie/upcoming", { page, language: "en-US" }),
+        this.get<IMoviesResponse>("movie/now_playing", { page, language: "en-US" }),
       ])
 
-      if (!responses.every((response) => response?.ok)) {
-        const problem = getGeneralAPIProblem(responses.filter((response) => !response.ok)[0])
-        if (problem) {
-          throw new Error(problem.kind)
-        }
-      }
-
-      if (!responses.every((response) => !!response?.data)) {
-        throw new Error("errors.no_data")
-      }
       return {
-        popular: responses[0]?.data?.results ?? [],
-        topRated: responses[1]?.data?.results.slice(0, 6) ?? [],
-        upcoming: responses[2]?.data?.results.slice(0, 6) ?? [],
-        nowPlaying: responses[3]?.data?.results.slice(0, 6) ?? [],
+        popular: popular.results,
+        topRated: topRated.results.slice(0, 6),
+        upcoming: upcoming.results.slice(0, 6),
+        nowPlaying: nowPlaying.results.slice(0, 6),
       }
     },
-    searchWith: async (query: string): Promise<IMovie[]> => {
-      const response: APIResponse<IMoviesResponse> = await this.apisauce.get("search/movie", {
+
+    /** Searches movies by query string. */
+    search: async (query: string): Promise<IMovie[]> => {
+      const data = await this.get<IMoviesResponse>("search/movie", {
         query,
         language: "en-US",
         page: 1,
       })
-
-      if (!response.ok) {
-        const problem = getGeneralAPIProblem(response)
-        if (problem) {
-          throw new Error(problem.kind)
-        }
-      }
-
-      if (!response.data) {
-        throw new Error("errors.no_data")
-      }
-      return response.data.results
+      return data.results
     },
   }
 }
