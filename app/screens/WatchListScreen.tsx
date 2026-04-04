@@ -1,13 +1,12 @@
 import React, { FC, useCallback } from "react"
 import { observer, Observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
-import { EmptyStateFullScreen, Screen } from "app/components"
+import { EmptyState, MovieCard, Screen } from "app/components"
 import { TabScreenProps } from "app/navigators/RootNavigator"
-import { HorizontalMovieCard } from "app/components/HorizontalMovieCard"
-import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
 import { Spacings } from "react-native-ui-lib"
 import { FlashList } from "@shopify/flash-list"
 import { IMovie } from "app/services/api"
+import { getPosterUrl } from "app/services/api/constants"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "app/models"
 import { getSnapshot } from "mobx-state-tree"
@@ -22,11 +21,11 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
     navigation.navigate("MovieDetails", { movieID })
   }, [])
 
-  const renderHorizontalMovieCard = useCallback(
+  const renderMovieListItem = useCallback(
     ({ item: movie, index }: { item: IMovie; index: number }) => {
       return (
-        <HorizontalMovieCard
-          posterURL={POSTER_IMAGE_BASE_URL + movie.poster_path}
+        <MovieCard
+          posterUri={getPosterUrl(movie.poster_path, "w342")}
           title={movie.title}
           overview={movie.overview}
           voteAverage={movie.vote_average}
@@ -46,10 +45,10 @@ export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
             data={getSnapshot(watchListStore.movies)}
             contentContainerStyle={{ paddingTop: Spacings.s8 }}
             showsVerticalScrollIndicator={false}
-            renderItem={renderHorizontalMovieCard}
+            renderItem={renderMovieListItem}
             estimatedItemSize={180}
             ListEmptyComponent={() => (
-              <EmptyStateFullScreen
+              <EmptyState
                 // @ts-ignore TODO: fix this type error
                 button={{ onPress: () => navigation.navigate("Home"), label: "Show Movies" }}
                 message="Start Building Your Film Collection"

@@ -1,43 +1,39 @@
-import React, { FunctionComponent } from "react"
+import React from "react"
 import { ViewStyle, ImageStyle, TextStyle } from "react-native"
 import { Card, Text, View, Spacings, Colors } from "react-native-ui-lib"
 import { Image } from "expo-image"
-import { IMAGES } from "app/../assets"
-import truncate from "lodash.truncate"
+import { IMAGES } from "../../assets"
+
+const HIGH_PRIORITY_THRESHOLD = 4
+const POSTER_TOP_OFFSET = -(Spacings.s10 * 1.1)
 
 type Props = {
-  posterURL: string
+  posterUri: string
   title: string
   voteAverage: number
-  overview: string
+  overview?: string
   onPress?: () => void
   index: number
 }
 
-export const HorizontalMovieCard: FunctionComponent<Props> = ({
-  posterURL,
-  title,
-  voteAverage,
-  overview,
-  onPress,
-  index,
-}) => {
+export const MovieCard = ({ posterUri, title, voteAverage, overview, onPress, index }: Props) => {
   return (
-    <Card onPress={onPress} key={1} style={$container}>
+    <Card onPress={onPress} style={$container}>
       <Image
-        priority={index < 4 ? "high" : "low"}
-        source={{ uri: posterURL.replace("original", "w342") }}
+        priority={index < HIGH_PRIORITY_THRESHOLD ? "high" : "low"}
+        source={{ uri: posterUri }}
         placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
         placeholderContentFit="cover"
         style={$posterImage}
       />
       <View style={$middleContainer}>
-        <Text style={$titleLabel} text50M>
-          {truncate(title, { length: 25 })}
+        <Text style={$titleLabel} text50M numberOfLines={1}>
+          {title}
         </Text>
-        <Text style={$overview}>{overview?.slice(0, 90)}...</Text>
+        <Text style={$overview} numberOfLines={3}>
+          {overview}
+        </Text>
       </View>
-
       <Text style={$voteAverageLabel}>{voteAverage.toFixed(1)}</Text>
     </Card>
   )
@@ -52,11 +48,12 @@ const $container: ViewStyle = {
   overflow: "visible",
   marginBottom: Spacings.s8,
 }
+
 const $posterImage: ImageStyle = {
   width: 110,
   height: 170,
   borderRadius: 10,
-  top: -Spacings.s10 * 1.1,
+  top: POSTER_TOP_OFFSET,
 }
 
 const $voteAverageLabel: TextStyle = {

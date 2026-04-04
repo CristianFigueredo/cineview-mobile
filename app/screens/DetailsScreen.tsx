@@ -8,9 +8,9 @@ import React, {
 } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, ImageStyle, TextStyle, Alert } from "react-native"
-import { FullScreenLoader, Screen } from "app/components"
+import { LoadingIndicator, Screen } from "app/components"
 import { AppStackScreenProps } from "app/navigators/AppNavigator"
-import { POSTER_IMAGE_BASE_URL } from "app/services/api/constants"
+import { getPosterUrl } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
 import Icon from "@expo/vector-icons/Octicons"
 import { Text, Colors, Spacings, Chip, View, Button } from "react-native-ui-lib"
@@ -21,7 +21,7 @@ import { IMovieDetail } from "app/services/api/entities"
 import { openLinkInBrowser } from "app/utils/openLinkInBrowser"
 import { useStores } from "app/models"
 import { IMAGES } from "app/../assets"
-import truncate from "lodash.truncate"
+
 import * as storage from "app/utils/storage"
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
@@ -48,7 +48,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
       if (localMovieDetails) {
         details = JSON.parse(localMovieDetails) as IMovieDetail
       } else {
-        details = await api.movies.getDetailsWith(movieID)
+        details = await api.movies.getItemDetails(movieID)
         storage.saveString(localMovieKey, JSON.stringify(details))
       }
       setMovieDetails(details)
@@ -67,21 +67,19 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
     openLinkInBrowser("https://www.youtube.com/watch?v=" + videoKey)
   }, [movieDetails])
 
-  if (isLoading) return <FullScreenLoader />
+  if (isLoading) return <LoadingIndicator />
   if (!movieDetails) return null
-  // TODO: fix types
-  const renderCastMemberCard = (item: any) => (
+
+  const renderCastMemberCard = ({ item }: { item: IMovieDetail["credits"]["cast"][number] }) => (
     <View marginR-s6>
       <Image
         style={$castPicture}
         placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
         placeholderContentFit="cover"
-        source={{
-          uri: (POSTER_IMAGE_BASE_URL + item.item.profile_path).replace("original", "w185"),
-        }}
+        source={{ uri: getPosterUrl(item.profile_path, "w185") }}
       />
       <Text style={$castName} marginT-s1>
-        {truncate(item.item.name, { length: 13 })}
+        {item.name.slice(0, 13)}
       </Text>
     </View>
   )
@@ -92,9 +90,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
         style={$movieBackdrop}
         placeholder={IMAGES.MOVIE_BACKDROP_PLACEHOLDER}
         placeholderContentFit="cover"
-        source={{
-          uri: (POSTER_IMAGE_BASE_URL + movieDetails.backdrop_path).replace("original", "w300"),
-        }}
+        source={{ uri: getPosterUrl(movieDetails.backdrop_path, "w342") }}
         blurRadius={1}
       >
         <IconWrapper onPress={navigation.goBack} size="small" style={$closeIconWrapper}>
@@ -110,9 +106,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
             style={$poster}
             placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
             placeholderContentFit="cover"
-            source={{
-              uri: (POSTER_IMAGE_BASE_URL + movieDetails.poster_path).replace("original", "w342"),
-            }}
+            source={{ uri: getPosterUrl(movieDetails.poster_path, "w342") }}
           />
           <View style={$titleAndDetailsContainer}>
             <Text text60M marginB-s3>

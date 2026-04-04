@@ -3,15 +3,17 @@ import { View, ViewStyle } from "react-native"
 import { Bounce } from "react-native-animated-spinkit"
 import { Colors } from "react-native-ui-lib"
 
-export const FullScreenLoader = () => {
+const SPINNER_SIZE = 33
+
+export const LoadingIndicator = () => {
   return (
-    <View style={$fullScreenLoader}>
-      <Bounce size={33} color={Colors.primary} />
+    <View style={$container} accessibilityLabel="Loading" accessibilityRole="progressbar">
+      <Bounce size={SPINNER_SIZE} color={Colors.$backgroundPrimaryHeavy} />
     </View>
   )
 }
 
-const $fullScreenLoader: ViewStyle = {
+const $container: ViewStyle = {
   flex: 1,
   justifyContent: "center",
   alignItems: "center",

@@ -1,16 +1,16 @@
 import React, { FC, useCallback, useState, useEffect, Fragment } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, Dimensions, View, FlatList, TextStyle, Alert } from "react-native"
-import { FullScreenLoader, Screen } from "app/components"
+import { LoadingIndicator, Screen, FeaturedCard, PosterCard } from "app/components"
 import Carousel from "react-native-snap-carousel"
 import { TabScreenProps } from "app/navigators/RootNavigator"
 import { Spacings, Text } from "react-native-ui-lib"
 import Icon from "@expo/vector-icons/Octicons"
-import { TallMovieCard, BigMovieCard } from "./components"
 import { translate } from "app/i18n"
 import { MotiPressable } from "moti/interactions"
 import { useNavigation } from "@react-navigation/native"
 import { IMovie, api } from "app/services/api"
+import { getPosterUrl } from "app/services/api/constants"
 import * as storage from "app/utils/storage"
 
 interface HomeScreenProps extends TabScreenProps<"Home"> {}
@@ -41,7 +41,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const moviesByCategory = await api.movies.getAllByCategory(1)
+        const moviesByCategory = await api.movies.getHomeItemsByCategory(1)
         storage.saveString("moviesByCategory", JSON.stringify(moviesByCategory))
         setIsLoading(false)
         setMoviesByCategory(moviesByCategory)
@@ -61,21 +61,27 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
     main()
   }, [])
 
-  const renderTallMovieCard = useCallback(
-    ({ item: movie, index }: { item: IMovie; index: number }) => {
-      return (
-        <TallMovieCard index={index} information={movie} onPress={() => onMoviePress(movie.id)} />
-      )
-    },
+  const renderMoviePosterCard = useCallback(
+    ({ item: movie, index }: { item: IMovie; index: number }) => (
+      <PosterCard
+        index={index}
+        posterUri={getPosterUrl(movie.poster_path, "w342")}
+        title={movie.title}
+        onPress={() => onMoviePress(movie.id)}
+      />
+    ),
     [],
   )
 
-  const renderBigMovieCard = useCallback(
-    ({ item: movie, index }: { item: IMovie; index: number }) => {
-      return (
-        <BigMovieCard index={index} information={movie} onPress={() => onMoviePress(movie.id)} />
-      )
-    },
+  const renderFeaturedMovieCard = useCallback(
+    ({ item: movie, index }: { item: IMovie; index: number }) => (
+      <FeaturedCard
+        index={index}
+        posterUri={getPosterUrl(movie.poster_path, "w500")}
+        title={movie.title}
+        onPress={() => onMoviePress(movie.id)}
+      />
+    ),
     [],
   )
 
@@ -86,7 +92,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
     }
   }, [])
 
-  if (isLoading) return <FullScreenLoader />
+  if (isLoading) return <LoadingIndicator />
 
   return (
     <Screen contentContainerStyle={$root} safeAreaEdges={["top"]} preset="scroll">
@@ -106,7 +112,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           layout="stack"
           contentContainerCustomStyle={$carouselContentContainer}
           // @ts-ignore TODO: fix this type error
-          renderItem={renderBigMovieCard}
+          renderItem={renderFeaturedMovieCard}
           sliderWidth={SCREEN_WIDTH}
           itemWidth={SCREEN_WIDTH}
         />
@@ -119,7 +125,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           <FlatList
             data={moviesByCategory.topRated}
             // @ts-ignore TODO: fix this type error
-            renderItem={renderTallMovieCard}
+            renderItem={renderMoviePosterCard}
             keyExtractor={(item) => item.id.toString()}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -132,7 +138,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           <FlatList
             data={moviesByCategory.nowPlaying}
             // @ts-ignore TODO: fix this type error
-            renderItem={renderTallMovieCard}
+            renderItem={renderMoviePosterCard}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
             horizontal
@@ -145,7 +151,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
           <FlatList
             data={moviesByCategory.upcoming}
             // @ts-ignore TODO: fix this type error
-            renderItem={renderTallMovieCard}
+            renderItem={renderMoviePosterCard}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
             horizontal

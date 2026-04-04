@@ -1,16 +1,25 @@
-import React, { FunctionComponent } from "react"
+import React from "react"
 import { ViewStyle } from "react-native"
 import { TextField, Card, Spacings, Colors } from "react-native-ui-lib"
 import { SimpleLineIcons } from "@expo/vector-icons"
 
+const ICON_SIZE = 20
+
 type Props = {
   onQueryChange?: (query: string) => void
 }
-export const SearchBar: FunctionComponent<Props> = ({ onQueryChange }) => {
+
+export const SearchBar = ({ onQueryChange }: Props) => {
   return (
     <Card containerStyle={$container}>
-      <SimpleLineIcons style={$icon} name="magnifier" size={20} color="black" />
+      <SimpleLineIcons
+        style={$icon}
+        name="magnifier"
+        size={ICON_SIZE}
+        color={Colors.$textNeutral}
+      />
       <TextField
+        accessibilityLabel="Search movies"
         placeholderTextColor={Colors.$textNeutral}
         placeholder="Search"
         hideUnderline
@@ -28,7 +37,7 @@ const $container: ViewStyle = {
 }
 
 const $textField: ViewStyle = {
-  width: "100%",
+  flex: 1,
 }
 
 const $icon: ViewStyle = {
