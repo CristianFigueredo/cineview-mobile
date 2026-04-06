@@ -1,19 +1,16 @@
-const { defaults: tsjPreset } = require("ts-jest/presets")
-
 /** @type {import('@jest/types').Config.ProjectConfig} */
 module.exports = {
-  ...tsjPreset,
   preset: "jest-expo",
-  transformIgnorePatterns: [
-    "<rootDir>/node_modules/(react-clone-referenced-element|@react-native-community|react-navigation|@react-navigation/.*|@unimodules/.*|native-base|react-native-code-push)",
-    "jest-runner",
-  ],
-  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.maestro/", "@react-native"],
-  testEnvironment: "jsdom",
+  testEnvironment: "node",
+  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.maestro/"],
   setupFiles: ["<rootDir>/test/setup.ts"],
-  transform:{
-    '^.+\\.test.tsx?$': ['ts-jest', {
-      tsconfig: '<rootDir>/test/test-tsconfig.json'
-    }]
-  }
+  setupFilesAfterEnv: ["<rootDir>/test/setupAfterFramework.ts"],
+  moduleNameMapper: {
+    // Stub asset files
+    "\\.(jpg|jpeg|png|gif|svg|ttf|woff|woff2)$": "<rootDir>/test/mockFile.ts",
+    // Resolve bare "assets/..." imports (used in EmptyState, MovieCard)
+    "^assets/(.*)$": "<rootDir>/assets/$1",
+    // Prevent expo/virtual/streams from crashing axios auto-mock in Node
+    "^expo/virtual/streams$": "<rootDir>/test/mocks/streams.ts",
+  },
 }
