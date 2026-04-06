@@ -1,9 +1,9 @@
 ## Quick Start
 
-The Ignite boilerplate project's structure will look similar to this:
+The project's structure look similar to this:
 
 ```
-ignite-project
+cineview
 ├── app
 │   ├── components
 │   ├── config
@@ -23,30 +23,9 @@ ignite-project
 │   ├── mockFile.ts
 │   └── setup.ts
 ├── README.md
-├── android
-│   ├── app
-│   ├── build.gradle
-│   ├── gradle
-│   ├── gradle.properties
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── keystores
-│   └── settings.gradle
-├── ignite
-│   └── templates
-|       |── app-icon
-│       ├── component
-│       ├── model
-│       ├── navigator
-│       └── screen
 ├── index.js
-├── ios
-│   ├── IgniteProject
-│   ├── IgniteProject-tvOS
-│   ├── IgniteProject-tvOSTests
-│   ├── IgniteProject.xcodeproj
-│   └── IgniteProjectTests
 ├── .env
+├── .env.example
 └── package.json
 
 ```
@@ -107,32 +86,6 @@ assets
 └── images
 ```
 
-**icons**
-This is where your icon assets will live. These icons can be used for buttons, navigation elements, or any other UI components. The recommended format for icons is PNG, but other formats can be used as well.
-
-Ignite comes with a built-in `Icon` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-Icon.md).
-
-**images**
-This is where your images will live, such as background images, logos, or any other graphics. You can use various formats such as PNG, JPEG, or GIF for your images.
-
-Another valuable built-in component within Ignite is the `AutoImage` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-AutoImage.md).
-
-How to use your `icon` or `image` assets:
-
-```
-import { Image } from 'react-native';
-
-const MyComponent = () => {
-  return (
-    <Image source={require('../assets/images/my_image.png')} />
-  );
-};
-```
-
-### ./ignite directory
-
-The `ignite` directory stores all things Ignite, including CLI and boilerplate items. Here you will find templates you can customize to help you get started with React Native.
-
 ### ./test directory
 
 This directory will hold your Jest configs and mocks.
@@ -163,10 +116,8 @@ then this detail should be easily accessible if necessary, but it should not be
 
 ### Detail how you would do everything that you have not completed.
 
-Write tests for everything primarily for the most important parts of the app, aiming in this case for 100% coverage.
+I would fix the TypeScript errors, add more robust testing with end-to-end tests, and it would be easy to achieve 100% code coverage, although that wouldn’t be necessary.
 
-do the testing of the request handlers (using mocks)
+I would remove libraries that are no longer being maintained and implement my own version.
 
-then write e2e tests for all flows.
-
-this will go a long way to see that all flows work and display correctly on a wide range of devices without having to do manual testing.
+I would significantly improve the design and set up an automated deployment process.
