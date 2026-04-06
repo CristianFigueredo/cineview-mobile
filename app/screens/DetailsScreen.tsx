@@ -1,14 +1,6 @@
-import React, {
-  FunctionComponent,
-  useState,
-  useEffect,
-  Fragment,
-  useCallback,
-  PropsWithChildren,
-} from "react"
-import { observer } from "mobx-react-lite"
-import { ViewStyle, ImageStyle, TextStyle, Alert } from "react-native"
-import { LoadingIndicator, Screen } from "app/components"
+import React, { Fragment, useCallback, PropsWithChildren } from "react"
+import { ViewStyle, ImageStyle, TextStyle, Pressable } from "react-native"
+import { LoadingIndicator, EmptyState, Screen } from "app/components"
 import { AppStackScreenProps } from "app/navigators/AppNavigator"
 import { getPosterUrl } from "app/services/api/constants"
 import { FlashList } from "@shopify/flash-list"
@@ -16,73 +8,55 @@ import Icon from "@expo/vector-icons/Octicons"
 import { Text, Colors, Spacings, Chip, View, Button } from "react-native-ui-lib"
 import { Image, ImageBackground } from "expo-image"
 import { useNavigation, useRoute } from "@react-navigation/native"
-import { api } from "app/services/api"
 import { IMovieDetail } from "app/services/api/entities"
 import { openLinkInBrowser } from "app/utils/openLinkInBrowser"
 import { useStores } from "app/models"
 import { IMAGES } from "app/../assets"
+import { useMovieDetails } from "app/hooks/useMovieDetails"
 
-import * as storage from "app/utils/storage"
+type CastMember = IMovieDetail["credits"]["cast"][number]
 
 interface Props extends AppStackScreenProps<"MovieDetails"> {}
 
-export const DetailsScreen: FunctionComponent<Props> = observer(function () {
-  const [movieDetails, setMovieDetails] = useState<IMovieDetail>()
-  const [cast, setCast] = useState<CastMember>([])
-  const [isLoading, setIsLoading] = React.useState(true)
-
+export const DetailsScreen = (_: Props) => {
   const route = useRoute()
+  // @ts-ignore TODO: fix navigation param types
+  const movieID = route.params?.movieID as string
+
+  const { data: movieDetails, isLoading, isError } = useMovieDetails(movieID)
+  const cast = movieDetails?.credits.cast.filter((member) => member.profile_path !== null) ?? []
+
   const {
     watchListStore: { addMovieToWatchList, removeMovieFromWatchList, isMovieInWatchList },
   } = useStores()
   const navigation = useNavigation()
 
-  useEffect(() => {
-    const fetchMovieDetails = async () => {
-      // @ts-ignore TODO: fix this type error
-      const movieID = route.params?.movieID as string
-      const localMovieKey = `movieDetails[${movieID}]`
-
-      let details
-      const localMovieDetails = await storage.loadString(localMovieKey)
-      if (localMovieDetails) {
-        details = JSON.parse(localMovieDetails) as IMovieDetail
-      } else {
-        details = await api.movies.getItemDetails(movieID)
-        storage.saveString(localMovieKey, JSON.stringify(details))
-      }
-      setMovieDetails(details)
-      setCast(details.credits.cast.filter((cast) => cast.profile_path !== null))
-      setIsLoading(false)
-    }
-    fetchMovieDetails().catch(() =>
-      Alert.alert("Something went wrong! are connected to the internet?"),
-    )
-  }, [])
-
   const showMovieTrailer = useCallback(async () => {
     const videoKey = movieDetails?.videos.results.find((video) => video.type === "Trailer")?.key
-    if (!videoKey) return Alert.alert("No trailer found :(")
+    if (!videoKey) return
 
     openLinkInBrowser("https://www.youtube.com/watch?v=" + videoKey)
   }, [movieDetails])
 
-  if (isLoading) return <LoadingIndicator />
-  if (!movieDetails) return null
-
-  const renderCastMemberCard = ({ item }: { item: IMovieDetail["credits"]["cast"][number] }) => (
-    <View marginR-s6>
-      <Image
-        style={$castPicture}
-        placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
-        placeholderContentFit="cover"
-        source={{ uri: getPosterUrl(item.profile_path, "w185") }}
-      />
-      <Text style={$castName} marginT-s1>
-        {item.name.slice(0, 13)}
-      </Text>
-    </View>
+  const renderCastMemberCard = useCallback(
+    ({ item }: { item: CastMember }) => (
+      <View marginR-s6>
+        <Image
+          style={$castPicture}
+          placeholder={IMAGES.GENERIC_IMAGE_PLACEHOLDER}
+          placeholderContentFit="cover"
+          source={{ uri: getPosterUrl(item.profile_path, "w185") }}
+        />
+        <Text style={$castName} marginT-s1>
+          {item.name.slice(0, 13)}
+        </Text>
+      </View>
+    ),
+    [],
   )
+
+  if (isLoading) return <LoadingIndicator />
+  if (isError || !movieDetails) return <EmptyState message="Could not load movie details." />
 
   return (
     <Screen statusBarStyle="light" style={$root} preset="scroll">
@@ -100,6 +74,7 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
           <Icon name="play" size={25} color="white" />
         </IconWrapper>
       </ImageBackground>
+
       <View style={$contentContainer}>
         <View style={$directionRow}>
           <Image
@@ -122,11 +97,13 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
             </Text>
           </View>
         </View>
+
         <Text text60M marginB-s2>
           Introduction
         </Text>
         <Text marginB-s4>{movieDetails.overview}</Text>
-        {!!cast && (
+
+        {cast.length > 0 && (
           <Fragment>
             <Text text60M marginT-s6 marginB-s3>
               Cast
@@ -135,11 +112,11 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
               data={cast}
               horizontal
               showsHorizontalScrollIndicator={false}
-              estimatedItemSize={100}
               renderItem={renderCastMemberCard}
             />
           </Fragment>
         )}
+
         <Button
           label={isMovieInWatchList(movieDetails.id) ? "Remove from WatchList" : "Add to WatchList"}
           onPress={() => {
@@ -154,50 +131,28 @@ export const DetailsScreen: FunctionComponent<Props> = observer(function () {
       </View>
     </Screen>
   )
-})
-
-type CastMember = IMovieDetail["credits"]["cast"]
-
-const iconWrapperSizes: Record<string, ViewStyle> = {
-  big: {
-    width: 65,
-    height: 65,
-    borderRadius: 32.5,
-  },
-  small: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-  },
 }
 
-type IconWrapperSize = keyof typeof iconWrapperSizes
+type IconWrapperSize = "big" | "small"
 
 type IconWrapperProps = PropsWithChildren<{
   size?: IconWrapperSize
   style?: ViewStyle
   onPress?: () => void
 }>
-const IconWrapper: FunctionComponent<IconWrapperProps> = ({
-  children,
-  size = "big",
-  style,
-  onPress,
-}) => (
-  <View onTouchEnd={onPress} style={[$iconWrapper, iconWrapperSizes[size], style]}>
+
+const iconWrapperSizes: Record<IconWrapperSize, ViewStyle> = {
+  big: { width: 65, height: 65, borderRadius: 32.5 },
+  small: { width: 45, height: 45, borderRadius: 22.5 },
+}
+
+const IconWrapper = ({ children, size = "big", style, onPress }: IconWrapperProps) => (
+  <Pressable onPress={onPress} style={[$iconWrapper, iconWrapperSizes[size], style]}>
     {children}
-  </View>
+  </Pressable>
 )
 
-const $iconWrapper: ViewStyle = {
-  backgroundColor: "rgba(0,0,0,0.3)",
-  justifyContent: "center",
-  alignItems: "center",
-}
-const $root: ViewStyle = {
-  flex: 1,
-  zIndex: 1,
-}
+const $root: ViewStyle = { flex: 1, zIndex: 1 }
 
 const $movieBackdrop: ViewStyle = {
   width: "100%",
@@ -213,9 +168,7 @@ const $contentContainer: ViewStyle = {
   padding: Spacings.s6,
 }
 
-const $directionRow: ViewStyle = {
-  flexDirection: "row",
-}
+const $directionRow: ViewStyle = { flexDirection: "row" }
 
 const $poster: ImageStyle = {
   width: 170,
@@ -233,16 +186,14 @@ const $castPicture: ImageStyle = {
   borderWidth: 1,
 }
 
-const $castName: TextStyle = {
-  textAlign: "center",
-  fontSize: 12,
-}
+const $castName: TextStyle = { textAlign: "center", fontSize: 12 }
 
 const $genres: ViewStyle = {
   maxWidth: 200,
   flexDirection: "row",
   flexWrap: "wrap",
 }
+
 const $titleAndDetailsContainer: ViewStyle = {
   marginLeft: Spacings.s4,
   marginTop: Spacings.s4,
@@ -254,4 +205,10 @@ const $closeIconWrapper: ViewStyle = {
   top: 50,
   left: 20,
   zIndex: 2,
+}
+
+const $iconWrapper: ViewStyle = {
+  backgroundColor: "rgba(0,0,0,0.3)",
+  justifyContent: "center",
+  alignItems: "center",
 }
