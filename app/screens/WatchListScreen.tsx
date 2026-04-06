@@ -1,5 +1,5 @@
-import React, { FC, useCallback } from "react"
-import { observer, Observer } from "mobx-react-lite"
+import React, { useCallback } from "react"
+import { observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
 import { EmptyState, MovieCard, Screen } from "app/components"
 import { TabScreenProps } from "app/navigators/RootNavigator"
@@ -9,54 +9,53 @@ import { IMovie } from "app/services/api"
 import { getPosterUrl } from "app/services/api/constants"
 import { useNavigation } from "@react-navigation/native"
 import { useStores } from "app/models"
-import { getSnapshot } from "mobx-state-tree"
 
 interface Props extends TabScreenProps<"WatchList"> {}
 
-export const WatchListScreen: FC<Props> = observer(function SearchScreen() {
+export const WatchListScreen = observer(function WatchListScreen(_: Props) {
   const navigation = useNavigation()
   const { watchListStore } = useStores()
-  const onMoviePress = useCallback((movieID: number) => {
-    // @ts-ignore TODO: fix this type error
-    navigation.navigate("MovieDetails", { movieID })
-  }, [])
 
-  const renderMovieListItem = useCallback(
-    ({ item: movie, index }: { item: IMovie; index: number }) => {
-      return (
-        <MovieCard
-          posterUri={getPosterUrl(movie.poster_path, "w342")}
-          title={movie.title}
-          overview={movie.overview}
-          voteAverage={movie.vote_average}
-          onPress={() => onMoviePress(movie.id)}
-          index={index}
-        />
-      )
+  const onMoviePress = useCallback(
+    (movieID: number) => {
+      // @ts-ignore TODO: fix navigation param types
+      navigation.navigate("MovieDetails", { movieID })
     },
-    [],
+    [navigation],
+  )
+
+  const renderMovieCard = useCallback(
+    ({ item: movie, index }: { item: IMovie; index: number }) => (
+      <MovieCard
+        posterUri={getPosterUrl(movie.poster_path, "w342")}
+        title={movie.title}
+        overview={movie.overview}
+        voteAverage={movie.vote_average}
+        onPress={() => onMoviePress(movie.id)}
+        index={index}
+      />
+    ),
+    [onMoviePress],
   )
 
   return (
     <Screen safeAreaEdges={["top"]} contentContainerStyle={$root} preset="scroll">
-      <Observer>
-        {() => (
-          <FlashList
-            data={getSnapshot(watchListStore.movies)}
-            contentContainerStyle={{ paddingTop: Spacings.s8 }}
-            showsVerticalScrollIndicator={false}
-            renderItem={renderMovieListItem}
-            estimatedItemSize={180}
-            ListEmptyComponent={() => (
-              <EmptyState
-                // @ts-ignore TODO: fix this type error
-                button={{ onPress: () => navigation.navigate("Home"), label: "Show Movies" }}
-                message="Start Building Your Film Collection"
-              />
-            )}
+      <FlashList
+        data={watchListStore.movies.slice()}
+        contentContainerStyle={{ paddingTop: Spacings.s8 }}
+        showsVerticalScrollIndicator={false}
+        renderItem={renderMovieCard}
+        ListEmptyComponent={() => (
+          <EmptyState
+            button={{
+              // @ts-ignore TODO: fix navigation param types
+              onPress: () => navigation.navigate("Home"),
+              label: "Show Movies",
+            }}
+            message="Start Building Your Film Collection"
           />
         )}
-      </Observer>
+      />
     </Screen>
   )
 })
