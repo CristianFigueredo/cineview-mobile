@@ -93,6 +93,7 @@
     "jest-expo": "~54.0.17",
     "patch-package": "^8.0.0",
     "prettier": "^3.5.3",
+    "react-test-renderer": "^19.1.0",
     "ts-jest": "^29.1.1",
     "tsx": "^4.21.0",
     "typescript": "^5.4.5"
