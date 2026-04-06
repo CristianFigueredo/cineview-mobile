@@ -1,9 +1,8 @@
 import axios, { AxiosInstance } from "axios"
 import Config from "../../config"
-import type { ApiConfig, IMovie, IMoviesResponse } from "./api.types"
+import type { ApiConfig, IMovie, IMoviesResponse, MoviesByCategory } from "./api.types"
 import { IMovieDetail } from "./entities"
 import { getGeneralAPIProblem } from "./apiProblem"
-import { MoviesState as IMoviesByCategory } from "app/screens"
 
 const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -62,7 +61,7 @@ export class Api {
     },
 
     /** Fetches movies across all four categories in parallel for the home screen. */
-    getHomeItemsByCategory: async (page: number): Promise<IMoviesByCategory> => {
+    getHomeItemsByCategory: async (page: number): Promise<MoviesByCategory> => {
       const [popular, topRated, upcoming, nowPlaying] = await Promise.all([
         this.get<IMoviesResponse>("movie/popular", { page, language: "en-US" }),
         this.get<IMoviesResponse>("movie/top_rated", { page, language: "en-US" }),

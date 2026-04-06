@@ -30,9 +30,12 @@ export interface IMovie {
  */
 export interface ApiConfig {
   url: string
-
-  /**
-   * Milliseconds before we timeout the request.
-   */
   timeout: number
+}
+
+export interface MoviesByCategory {
+  popular: IMovie[]
+  upcoming: IMovie[]
+  topRated: IMovie[]
+  nowPlaying: IMovie[]
 }
