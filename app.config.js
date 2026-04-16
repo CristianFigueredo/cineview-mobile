@@ -15,9 +15,7 @@ module.exports = ({ config }) => {
     updates: {
       url: "https://u.expo.dev/da879a06-53cf-4a7c-9ebe-41018a162110",
     },
-    runtimeVersion: {
-      policy: "appVersion",
-    },
+    runtimeVersion: "exposdk:54.0.0",
     plugins: [...existingPlugins],
   }
 }
